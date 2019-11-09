@@ -9,9 +9,7 @@ module.exports = async (req, res, next) => {
     const data = req.body;
 
     try {
-        await firestore.collection('users').doc(userId).update({
-            isAdmin: data.isAdmin
-        });
+        await firestore.collection('users').doc(userId).update(data);
     } catch(e) {
         return next({code: 'FIREBASE_ERROR', data: e});
     }

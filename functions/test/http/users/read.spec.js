@@ -1,4 +1,29 @@
+const read = require('../../../http/users/read');
+const firebase = require('../../../utils/firebase');
+const firestore = firebase.firestore();
 
-test('simple test that this works', () => {
-    expect(true).toBe(true);
+let req, res, next;
+
+beforeEach(() => {
+    req = jest.fn();
+    res = {
+        json: jest.fn()
+    };
+    next = jest.fn();
+});
+
+test('should get all users', async () => {
+    await read(req, res, next);
+
+    expect(res.json).toBeCalled();
+});
+
+test('should get a firebase error', async () => {
+    const error = {message: 'whateber'}
+    firestore.get.mockReturnValueOnce(Promise.reject(error));
+
+
+    await read(req, res, next);
+    
+    expect(next).toBeCalledWith({code: 'FIREBASE_ERROR', data: error});
 });

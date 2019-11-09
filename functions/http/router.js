@@ -4,7 +4,7 @@ const questions = require('./questions');
 
 const router = express.Router();
 
-router.route('/users', users);
-router.route('/questions', questions);
+router.use('/users', users);
+router.use('/questions', questions);
 
 module.exports = router;

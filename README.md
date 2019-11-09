@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.com/ajorquera/quizz-app.svg?branch=master)](https://travis-ci.com/ajorquera/quizz-app)
+
+url: https://quiz-app-b0a23.firebaseapp.com
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

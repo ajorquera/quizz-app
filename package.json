@@ -3,14 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "firebase": "^7.3.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:functions": "cd functions && npm start",
+    "install:all": "npm i && cd functions && npm i",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false && cd functions && npm test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

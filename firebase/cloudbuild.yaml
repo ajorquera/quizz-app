@@ -1,0 +1,7 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/${_PROJECT_ID}/firebase', '.' ]
+images:
+- 'gcr.io/${_PROJECT_ID}/firebase'
+substitutions:
+    _PROJECT_ID: quiz-app-b0a23

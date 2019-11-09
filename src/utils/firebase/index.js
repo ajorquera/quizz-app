@@ -4,6 +4,8 @@ import config from './config';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-firebase.initializeApp(config);
+if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+}
 
 export default firebase;

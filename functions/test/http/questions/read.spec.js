@@ -1,4 +1,4 @@
-const read = require('../../../http/users/read');
+const read = require('../../../http/questions/read');
 const firebase = require('../../../utils/firebase');
 const firestore = firebase.firestore();
 
@@ -12,7 +12,7 @@ beforeEach(() => {
     next = jest.fn();
 });
 
-test('should get all users', async () => {
+test('should get all questions', async () => {
     await read(req, res, next);
 
     expect(res.json).toBeCalled();
@@ -21,7 +21,6 @@ test('should get all users', async () => {
 test('should get a firebase error', async () => {
     const error = {message: 'whateber'}
     firestore.get.mockReturnValueOnce(Promise.reject(error));
-
 
     await read(req, res, next);
     

@@ -1,3 +1,9 @@
+const INTERNAL_SERVER_ERROR = 500;
+
 module.exports = (error, req, res, next) => {
-    //handle errores
+
+    // this gets log in google stackdriver
+    console.error(error);
+
+    res.status(INTERNAL_SERVER_ERROR).json(error)
 };

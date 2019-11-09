@@ -1,20 +1,16 @@
 const firebase = require('../../utils/firebase');
 
 const firestore = firebase.firestore();
+const NO_CONTENT = 204;
 
 module.exports = async (req, res, next) => {
-    let querySnapshot;
+    const questionId = req.params.id;
+
     try {
-        querySnapshot = await firestore.collection('users').get();
+        await firestore.collection('questions').doc(questionId).delete();
     } catch(e) {
         return next({code: 'FIREBASE_ERROR', data: e});
     }
 
-    const users = [];
-
-    querySnapshot.forEach(snap => {
-        users.push({id: snap.id, ...snap.data()});
-    })
-
-    res.json(users);
+    return res.status(NO_CONTENT).end();
 };

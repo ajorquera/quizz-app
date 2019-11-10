@@ -4,6 +4,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
 import {
     Link
@@ -13,8 +14,8 @@ export default (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const submit = () => {
-        props.onSubmit({
+    const submit = (type) => {
+        props.onSubmit(type, {
             password,
             email
         });
@@ -50,8 +51,10 @@ export default (props) => {
                     </div>
                 </CardContent>
                 <CardActions>
-
-                    <Button variant="contained" color="primary" size="large" fullWidth onClick={submit}>Login</Button>
+                    <Fab color="secundary" onClick={() => submit('google')}>G</Fab>
+                </CardActions>
+                <CardActions>
+                    <Button variant="contained" color="primary" size="large" fullWidth onClick={() => submit('password')}>Login</Button>
                 </CardActions>
             </Card>
         </div>

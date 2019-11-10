@@ -1,8 +1,8 @@
 import firebase from './firebase';
 
-const DOMAIN = process.env.REACT_APP_FIREBASE_API_DOMAIN || '';
-const baseURL = `http://${DOMAIN}`
-
+const DOMAIN = 'https://us-central1-quiz-app-b0a23.cloudfunctions.net';
+const path = '/api';
+const baseURL = `${DOMAIN}${path}`;
 
 const auth = firebase.auth();
 

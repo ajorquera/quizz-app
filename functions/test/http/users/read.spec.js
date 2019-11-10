@@ -5,7 +5,11 @@ const firestore = firebase.firestore();
 let req, res, next;
 
 beforeEach(() => {
-    req = jest.fn();
+    req = {
+        params: {
+            id: '245fsaf'
+        }
+    };
     res = {
         json: jest.fn()
     };

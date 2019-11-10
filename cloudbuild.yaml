@@ -3,6 +3,10 @@ steps:
     args: ["run", "install:all"]
   - name: "gcr.io/cloud-builders/npm"
     args: ["test"]
+    env: 
+      - 'REACT_APP_FIREBASE_API_KEY=${_FIREBASE_API_KEY}'
+      - 'REACT_APP_FIREBASE_PROJECT_ID=${PROJECT_ID}'
+
   - name: "gcr.io/cloud-builders/npm"
     args: ["run", "build"]
     env: 

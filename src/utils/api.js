@@ -10,6 +10,8 @@ const toJson = (res) => {
     return res.json();
 }
 
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+
 const onStateAuthChange = () => {
     return new Promise((resolve, reject) => {
         auth.onAuthStateChanged(user => {
@@ -42,6 +44,7 @@ export default {
     },
     auth: {
         login: (email, password) => auth.signInWithEmailAndPassword(email, password),
+        loginWithGoogle: () => auth.signInWithPopup(googleProvider),
         register: (email, password) => auth.createUserWithEmailAndPassword(email, password)
     },
     questions: {

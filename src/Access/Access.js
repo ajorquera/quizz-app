@@ -23,11 +23,27 @@ export default () => {
         console.log(error.message);
     }
 
+    const goToDashboard = () => history.push('/dashboard');
+
     const loginUser = ({email, password}) => {
-        api.auth.login(email, password).then(() => {
-            history.push('/dashboard');
-        }).catch(handleError)
+        api.auth.login(email, password)
+            .then(goToDashboard)
+            .catch(handleError)
     };
+
+    const loginWithGoogle = () => {
+        api.auth.loginWithGoogle()
+            .then(goToDashboard)
+            .catch(handleError);
+    };
+
+    const login = (type, data={}) => {
+        if(type === 'password') {
+            loginUser(data);
+        } else if(type === 'google') {
+            loginWithGoogle();
+        }
+    }
 
     const registerUser = ({email, password}) => {
         api.auth.register(email, password).then(() => {
@@ -46,7 +62,7 @@ export default () => {
                 <Grid xs={12} md={6} item >
                     <Switch>
                     <Route path={`${path}/login`}>
-                            <Login onSubmit={loginUser} />
+                            <Login onSubmit={login} />
                         </Route>
                         <Route path={`${path}/register`}>
                             <Register onSubmit={registerUser} />

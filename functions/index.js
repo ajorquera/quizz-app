@@ -3,4 +3,4 @@ const api          = require('./http/api');
 const onCreateUser = require('./background/onCreateUser');
 
 exports.api =  functions.https.onRequest(api);
-functions.auth.user().onCreate();
+exports.onCreateUser = functions.auth.user().onCreate(onCreateUser);

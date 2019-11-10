@@ -1,5 +1,6 @@
 import React from 'react';
 import Questions from '../Questions/Questions';
+import Admin from '../Admin/Admin';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -21,8 +22,11 @@ export default () => {
             >
                 <Grid xs={12} md={6} item >
                     <Switch>
-                        <Route path={`${path}/questions`}>
+                    <Route path={`${path}/questions`}>
                             <Questions />
+                        </Route>
+                        <Route path={`${path}/admin`}>
+                            <Admin />
                         </Route>
                         <Route>
                             <Redirect to={`${path}/questions`} />

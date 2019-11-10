@@ -7,6 +7,7 @@ const router = express.Router();
 
 router
     .get('/', read)
+    .get('/:id', read)
     .patch('/:id', update)
     .delete('/:id', deleteFn);
 

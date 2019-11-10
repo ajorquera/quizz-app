@@ -10,18 +10,32 @@ const toJson = (res) => {
     return res.json();
 }
 
+const onStateAuthChange = () => {
+    return new Promise((resolve, reject) => {
+        auth.onAuthStateChanged(user => {
+            resolve(user);
+        })
+    })
+}
+
+const headers = {
+    'Content-Type': 'application/json'
+};
+
 export default {
     users: {
         get: () => fetch(`${baseURL}/users`),
+        getMyInfo: async () => {
+            await onStateAuthChange();
+            return fetch(`${baseURL}/users/${auth.currentUser.uid}`).then(toJson);
+        },
         update: (data) => {
             const userId = auth.currentUser.uid;
-
+            
             return fetch(`${baseURL}/users/${userId}`, {
                 method: 'PATCH',
                 body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers
             })
         }
         
@@ -31,6 +45,13 @@ export default {
         register: (email, password) => auth.createUserWithEmailAndPassword(email, password)
     },
     questions: {
-        get: () => fetch(`${baseURL}/questions`).then(toJson)
+        get: () => fetch(`${baseURL}/questions`).then(toJson),
+        update: (id, data) => {
+            return fetch(`${baseURL}/questions/${id}`, {
+                method: 'PATCH',
+                body: JSON.stringify(data),
+                headers
+            })
+        }
     }
 }

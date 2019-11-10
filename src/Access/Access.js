@@ -25,7 +25,7 @@ export default () => {
 
     const loginUser = ({email, password}) => {
         api.auth.login(email, password).then(() => {
-            history.push('/home');
+            history.push('/dashboard');
         }).catch(handleError)
     };
 

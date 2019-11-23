@@ -1,58 +1,82 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import useForm from 'react-hook-form';
+import { HookFormInput } from "react-hook-form-input";
+import * as yup from "yup";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import {
     Link
   } from "react-router-dom";
 
-export default (props) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const formSchema = yup.object().shape({
+    email: yup.string().email().required(),
+    password: yup.string().min(6).required()
+  });
 
-    const submit = () => {
-        props.onSubmit({
-            password,
-            email
-        });
-    };
+export default (props) => {
+    const { register, handleSubmit, errors, formState, setValue } = useForm({
+        validationSchema: formSchema
+    });
+
+    const submit = props.onSubmit;
+
+    const isSubmitDisabled = Boolean(props.loading || (formState.isSubmitted && !formState.isValid));
+
+    const showError = (propName) => Boolean(formState.isSubmitted && errors[propName]);
+    const showErrorMessage = (propName) => showError(propName) && errors[propName].message;
 
     return (
-
         <div>
             <Card>
-                <CardHeader title="Login"/>
-                <CardContent>
-                    <div>
-                        <TextField
+                <form onSubmit={handleSubmit(submit)}>
+                    <CardHeader title="Login"/>
+                    <CardContent>
+                        <HookFormInput
+                            error={showError('email')}
+                            helperText={showErrorMessage('email')}
+                            fullWidth
                             label="Email"
+                            mode="onChange"
+                            name="email"
                             margin="normal"
-                            fullWidth
-                            value={email} 
-                            onChange={(e) => setEmail(e.target.value)}
+                            register={register}
+                            component={<TextField />}
+                            setValue={setValue}
                         />
-                    </div>
-                    <div>
-                        <TextField
+                        <HookFormInput
                             fullWidth
+                            error={showError('password')}
+                            helperText={showErrorMessage('password')}
+                            name="password"
                             label="Password"
                             margin="normal"
                             type="password"
-                            value={password} onChange={(e) => setPassword(e.target.value)}
+                            mode="onChange"
+                            component={<TextField />}
+                            register={register}
+                            setValue={setValue}
                         />
-                    </div>
-                    <div>
-                        <span>Not an user? </span>
-                        <Link to="/access/register">Register</Link>
-                    </div>
-                </CardContent>
-                <CardActions>
-
-                    <Button variant="contained" color="primary" size="large" fullWidth onClick={submit}>Login</Button>
-                </CardActions>
+                        <div>
+                            <span>Not an user? </span>
+                            <Link to="/access/register">Register</Link>
+                        </div>
+                        <div>
+                            <span>Forgot your password? </span>
+                            <Link to="/access/forgot-password">Click here</Link>
+                        </div>
+                    </CardContent>
+                    <CardActions>
+                        <Button disabled={isSubmitDisabled} variant="contained" type="submit" color="primary" size="large" fullWidth>
+                            {props.loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+                        </Button>
+                    </CardActions>
+                </form>
             </Card>
         </div>
     );

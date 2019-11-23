@@ -42,7 +42,8 @@ export default {
     },
     auth: {
         login: (email, password) => auth.signInWithEmailAndPassword(email, password),
-        register: (email, password) => auth.createUserWithEmailAndPassword(email, password)
+        register: (email, password) => auth.createUserWithEmailAndPassword(email, password),
+        forgotPassword: email => auth.sendPasswordResetEmail(email)
     },
     questions: {
         get: () => fetch(`${baseURL}/questions`).then(toJson),

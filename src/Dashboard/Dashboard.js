@@ -2,11 +2,9 @@ import React from 'react';
 import Questions from '../Questions/Questions';
 import Admin from '../Admin/Admin';
 
-import Grid from '@material-ui/core/Grid';
 
 import {
     Switch,
-    Redirect,
     Route,
     useRouteMatch
   } from "react-router-dom";
@@ -14,26 +12,23 @@ import {
 export default () => {
     const match = useRouteMatch();
     const path = match.path;
+    const style = {
+        Dashboard: {
+            minHeight: '100vh',
+            margin: '50px'
+        }
+    };
 
     return (
-        <div>
-            <Grid 
-                container 
-            >
-                <Grid xs={12} md={6} item >
-                    <Switch>
-                    <Route path={`${path}/questions`}>
-                            <Questions />
-                        </Route>
-                        <Route path={`${path}/admin`}>
-                            <Admin />
-                        </Route>
-                        <Route>
-                            <Redirect to={`${path}/questions`} />
-                        </Route>
-                    </Switch>
-                </Grid>
-            </Grid>
+        <div style={style.Dashboard}>
+            <Switch>
+                <Route path={`${path}/admin`}>
+                    <Admin />
+                </Route>
+                <Route>
+                    <Questions />
+                </Route>
+            </Switch>
         </div>
     );
 }

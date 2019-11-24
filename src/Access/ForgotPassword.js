@@ -33,11 +33,11 @@ export default (props) => {
                         />
                     <div>
                         <span>Go Back </span>
-                        <Link to="/access/login">Register</Link>
+                        <Link to="/access/login">Login</Link>
                     </div>
                 </CardContent>
                 <CardActions>
-                    <Button variant="contained" color="primary" size="large" fullWidth onClick={submit}>Login</Button>
+                    <Button variant="contained" color="primary" size="large" fullWidth onClick={submit}>Reset Password</Button>
                 </CardActions>
             </Card>
         </div>

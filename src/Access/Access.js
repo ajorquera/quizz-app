@@ -61,8 +61,10 @@ export default (props) => {
         });
     };
 
-    const forgotPassword = (email) => {
-        request(api.auth.forgotPassword());
+    const forgotPassword = ({email}) => {
+        request(api.auth.forgotPassword(email)).then(() => {
+            enqueueSnackbar('We have send an email to reset your password')
+        });
     }
 
     const style = {

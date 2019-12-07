@@ -1,7 +1,6 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -13,18 +12,45 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {
     Link
   } from "react-router-dom";
+import { makeStyles } from '@material-ui/styles';
 
   const formSchema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().min(6).required()
   });
 
-export default (props) => {
-    const style = {
-        center: {
-            textAlign: 'center'
+  const useStyles = makeStyles({
+    center: {
+        textAlign: 'center'
+    },
+    cardHeader: {
+        paddingBottom: '0',
+        textAlign: 'center'
+    },
+    cardContent: {
+        paddingTop: '0'
+    },
+    loginButton: {
+        background: 'linear-gradient(225deg, rgba(255,38,106,1) 0%, rgba(255,102,64,1) 100%);',
+        color: 'white',
+        margin: '0 auto',
+        borderRadius: '30px',
+        '&.Mui-disabled': {
+            background: 'rgba(0, 0, 0, 0.26)'
+        }
+    },
+    links: {
+        textAlign: 'center',
+        '& a': {
+            color: '#ff7a52',
+            fontWeight: 'bolder',
+            textDecoration: 'none'
         }
     }
+  });
+
+export default (props) => {
+    const classes = useStyles();
 
     const { register, handleSubmit, errors, formState, setValue } = useForm({
         validationSchema: formSchema
@@ -45,8 +71,7 @@ export default (props) => {
         <div>
             <Card>
                 <form onSubmit={handleSubmit(submit('password'))}>
-                    <CardHeader title="Login"/>
-                    <CardContent>
+                    <CardContent className={classes.cardContent}>
                         <HookFormInput
                             error={showError('email')}
                             helperText={showErrorMessage('email')}
@@ -72,26 +97,20 @@ export default (props) => {
                             register={register}
                             setValue={setValue}
                         />
-                        <div>
-                            <span>Not an user? </span>
-                            <Link to="/access/register">Register</Link>
-                        </div>
-                        <div>
-                            <span>Forgot your password? </span>
-                            <Link to="/access/forgot-password">Click here</Link>
-                        </div>
                     </CardContent>
                     <CardActions>
-                        <Button disabled={isSubmitDisabled} variant="contained" type="submit" color="primary" size="large" fullWidth>
+                        <Button disabled={isSubmitDisabled} variant="contained" type="submit" size="large" classes={{contained: classes.loginButton}}>
                             {props.loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                         </Button>
-                    </CardActions>
-                    <p style={style.center}>OR</p>
-                    <CardActions>
-                        <Button disabled={props.loading} variant="contained" onClick={submit('google')} color="secondary" size="large" fullWidth>
-                            {props.loading ? <CircularProgress size={24} color="inherit" /> : 'Login With GOOGLE'}
-                        </Button>
-                    </CardActions>
+                    </CardActions>                    
+                    <CardContent className={classes.links}>
+                        <div>   
+                            <Link to="/access/register">REGISTRO</Link>
+                        </div>
+                        <div>
+                            <Link to="/access/forgot-password">OLVIDE MI CONTRASEÑA</Link>
+                        </div>
+                    </CardContent>
                 </form>
             </Card>
         </div>

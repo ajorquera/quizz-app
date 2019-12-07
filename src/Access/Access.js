@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Login from './Login';
 import Register from './Register';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import api from '../utils/api';
@@ -15,7 +16,31 @@ import {
     useRouteMatch
   } from "react-router-dom";
 
+const useStyles = makeStyles({
+    Access: {
+        minHeight: '100vh',
+        padding: '15px'
+        
+    },
+    backgroundTop: {
+        position: 'absolute',
+        height: '40%',
+        width: '100%',
+        zIndex: '-1',
+        background: 'linear-gradient(225deg, rgba(255,38,106,1) 0%, rgba(255,102,64,1) 100%);',
+        borderRadius: 3,
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        color: 'white',
+    },
+    card: {
+        margin: '0 10px'
+    }
+});
+
+
+
 export default (props) => {
+    const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
     let history = useHistory();
 
@@ -67,36 +92,33 @@ export default (props) => {
         });
     }
 
-    const style = {
-        Access: {
-            minHeight: '100vh'
-        }
-    };
-
     return (
-        <Grid 
-            style={style.Access}
-            container 
-            direction="row"
-            justify="center"
-            alignItems="center"
-        >
-            <Grid xs={12} sm={8} md={4} item >
-                <Switch>
-                    <Route path={`${path}/login`}>
-                        <Login onSubmit={login} loading={loading} />
-                    </Route>
-                    <Route path={`${path}/register`}>
-                        <Register onSubmit={registerUser} loading={loading} />
-                    </Route>
-                    <Route path={`${path}/forgot-password`}>
-                        <ForgotPassword onSubmit={forgotPassword} loading={loading} />
-                    </Route>
-                    <Route>
-                        <Redirect to={`${path}/login`} />
-                    </Route>
-                </Switch>
+        <React.Fragment>
+            <div className={classes.backgroundTop}></div>
+            <Grid 
+                className={classes.Access}
+                container 
+                direction="row"
+                justify="center"
+                alignItems="center"
+            >
+                <Grid xs={12} sm={8} md={4} item >
+                    <Switch>
+                        <Route path={`${path}/login`}>
+                            <Login onSubmit={login} loading={loading} />
+                        </Route>
+                        <Route path={`${path}/register`}>
+                            <Register onSubmit={registerUser} loading={loading} />
+                        </Route>
+                        <Route path={`${path}/forgot-password`}>
+                            <ForgotPassword onSubmit={forgotPassword} loading={loading} />
+                        </Route>
+                        <Route>
+                            <Redirect to={`${path}/login`} />
+                        </Route>
+                    </Switch>
+                </Grid>
             </Grid>
-        </Grid>
+        </React.Fragment>
     );
 }

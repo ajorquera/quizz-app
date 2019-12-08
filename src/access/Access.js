@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import Login from './Login';
-import Register from './Register';
+import * as yup from "yup";
+import firebase from 'utils/firebase';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import api from '../utils/api';
-import ForgotPassword from './ForgotPassword';
 import { useSnackbar } from 'notistack';
 
 import {
@@ -15,6 +15,10 @@ import {
     useHistory,
     useRouteMatch
   } from "react-router-dom";
+
+import Form from './components/Form';
+
+const firestore = firebase.firestore();
 
 const useStyles = makeStyles({
     Access: {
@@ -32,11 +36,38 @@ const useStyles = makeStyles({
         boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
         color: 'white',
     },
-    card: {
-        margin: '0 10px'
+
+    logo: {
+        margin: '30px auto',
+        display: 'block'
     }
 });
 
+const loginSchema = yup.object().shape({
+    email: yup.string().email().required().meta({label: 'Email'}),
+    password: yup.string().min(6).required().meta({label: 'Contraseña', typeInput: 'password'})
+});
+
+const forgoPasswordSchema = yup.object().shape({
+    email: yup.string().email().required().meta({label: 'Email'})
+});
+
+const registerSchema = yup.object().shape({
+    email: yup.string().email().required().meta({label: 'Email'}),
+    companyName: yup.string().required().meta({label: 'Nombre de Empresa'}),
+    phone: yup.string().required().meta({label: 'Teléfono'}),
+    website: yup.string().required().meta({label: 'Web'}),
+    country: yup.string().required().meta({label: 'País'}),
+    password: yup.string().min(6).required().meta({label: 'Contraseña', typeInput: 'password'}),
+    termsConditions: yup.boolean().oneOf([true]).required().meta({label: 'Acepto los Terminos y Condiciones', typeInput: 'checkbox'}),
+});
+
+const loginLinks = [
+    {to: '/access/register', label:"registro"},
+    {to: '/access/forgot-password', label:"Olvide mi contraseña"},
+];
+
+const loginLink = {to: '/access/login', label:"login"}
 
 
 export default (props) => {
@@ -68,20 +99,22 @@ export default (props) => {
         request(api.auth.login(email, password)).then(goToDashboard)
     };
 
-    const loginWithGoogle = () => {
-        request(api.auth.loginWithGoogle()).then(goToDashboard);
-    }
+    const registerUser = (data) => {
+        const {email, password} = data;
 
-    const login = (type, data={}) => {
-        if(type === 'password') {
-            loginUser(data);
-        } else if(type === 'google') {
-            loginWithGoogle();
-        }
-    }
+        const promise = api.auth.register(email, password).then(auth => {
+            const user = auth.user;
 
-    const registerUser = ({email, password}) => {
-        request(api.auth.register(email, password)).then(() => {
+            return firestore.collection('users').doc(user.uid).set({
+                phone: data.phone,
+                email,
+                companyName: data.companyName,
+                website: data.website,
+                country: data.country            
+            })
+        });
+
+        request(promise).then(() => {
             history.push('/access/login');
         });
     };
@@ -100,18 +133,18 @@ export default (props) => {
                 container 
                 direction="row"
                 justify="center"
-                alignItems="center"
             >
                 <Grid xs={12} sm={8} md={4} item >
+                    <img className={classes.logo} src="/logo.png" alt="logo" />
                     <Switch>
                         <Route path={`${path}/login`}>
-                            <Login onSubmit={login} loading={loading} />
+                            <Form buttonTitle="Login" links={loginLinks} formSchema={loginSchema} onSubmit={loginUser} loading={loading} />
                         </Route>
                         <Route path={`${path}/register`}>
-                            <Register onSubmit={registerUser} loading={loading} />
+                            <Form buttonTitle="Registar" links={[loginLink]} formSchema={registerSchema} onSubmit={registerUser} loading={loading} />                            
                         </Route>
                         <Route path={`${path}/forgot-password`}>
-                            <ForgotPassword onSubmit={forgotPassword} loading={loading} />
+                            <Form buttonTitle="Resetear Contraseña" links={[loginLink]} formSchema={forgoPasswordSchema} onSubmit={forgotPassword} loading={loading} />                            
                         </Route>
                         <Route>
                             <Redirect to={`${path}/login`} />

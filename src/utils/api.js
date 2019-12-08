@@ -1,4 +1,4 @@
-import firebase from './firebase';
+import firebase from 'utils/firebase';
 
 const DOMAIN = 'https://us-central1-quiz-app-b0a23.cloudfunctions.net';
 const path = '/api';

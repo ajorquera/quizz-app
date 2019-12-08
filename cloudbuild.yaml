@@ -6,12 +6,14 @@ steps:
     env: 
       - 'REACT_APP_FIREBASE_API_KEY=${_FIREBASE_API_KEY}'
       - 'REACT_APP_FIREBASE_PROJECT_ID=${PROJECT_ID}'
+      - NODE_PATH=src
 
   - name: "gcr.io/cloud-builders/npm"
     args: ["run", "build"]
     env: 
       - 'REACT_APP_FIREBASE_API_KEY=${_FIREBASE_API_KEY}'
       - 'REACT_APP_FIREBASE_PROJECT_ID=${PROJECT_ID}'
+      - 'NODE_PATH=src'
 
   - name: "gcr.io/${PROJECT_ID}/firebase"
     args: [

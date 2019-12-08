@@ -1,5 +1,5 @@
 import React from "react";
-import Access from '../Access/Access'
+import Access from '../access/Access'
 import Dashboard from '../Dashboard/Dashboard';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { SnackbarProvider } from 'notistack';

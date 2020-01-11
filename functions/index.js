@@ -1,6 +1,6 @@
 const functions    = require('firebase-functions');
-const api          = require('./http/api');
+const app          = require('./http/app');
 const onCreateUser = require('./background/onCreateUser');
 
-exports.api =  functions.https.onRequest(api);
+exports.app =  functions.https.onRequest(app);
 exports.onCreateUser = functions.auth.user().onCreate(onCreateUser);

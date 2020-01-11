@@ -7,6 +7,6 @@ const app = require(`./${funcName}`);
 
 app.use(bodyParser.json());
 
-const message = `${funcName} endpoints are listening on port ${port}!`;
+const message = `${funcName} endpoints are listening on port ${port}!. Click on http://localhost:${port}/hello`;
 
 app.listen(port, () => console.log(message));

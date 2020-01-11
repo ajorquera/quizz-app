@@ -5,7 +5,7 @@
     "lint": "eslint .",
     "serve": "firebase serve --only functions",
     "shell": "firebase functions:shell",
-    "start": "node ./http/serve api",
+    "start": "node ./http/serve app",
     "test": "jest --env node",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"

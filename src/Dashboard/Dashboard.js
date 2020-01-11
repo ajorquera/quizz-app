@@ -1,6 +1,4 @@
 import React from 'react';
-import Questions from '../Questions/Questions';
-import Admin from '../Admin/Admin';
 
 
 import {
@@ -23,10 +21,8 @@ export default () => {
         <div style={style.Dashboard}>
             <Switch>
                 <Route path={`${path}/admin`}>
-                    <Admin />
                 </Route>
                 <Route>
-                    <Questions />
                 </Route>
             </Switch>
         </div>

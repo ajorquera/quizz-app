@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import api from '../utils/api';
 import { useSnackbar } from 'notistack';
 
+
 import {
     Switch,
     Redirect,
@@ -42,6 +43,19 @@ const useStyles = makeStyles({
         display: 'block'
     }
 });
+
+yup.setLocale({
+    mixed: {
+       required: 'Este campo es requerido'
+    },
+    string: {
+        email: 'Debe ser un email válido',
+        // eslint-disable-next-line
+        min: 'Debe tener al menos ${min} carácteres'
+    }
+
+});
+
 
 const loginSchema = yup.object().shape({
     email: yup.string().email().required().meta({label: 'Email'}),

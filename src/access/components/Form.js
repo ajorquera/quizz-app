@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import useForm from 'react-hook-form';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -9,7 +10,6 @@ import { HookFormInput } from "react-hook-form-input";
 import { makeStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types';
 
-import Button from "access/components/Button";
 import Link from "access/components/Link";
 import { FormControlLabel, Checkbox, FormHelperText, FormControl } from '@material-ui/core';
 
@@ -76,9 +76,6 @@ const Form = (props) => {
     const showError = (propName) => Boolean(errors[propName] && (formState.isSubmitted || formState.touched.find(prop => prop === propName)));
     const showErrorMessage = (propName) => showError(propName) && errors[propName].message;
     
-    console.log(errors);
-    console.log('isValid', formState.isValid);
-
     return (
         <React.Fragment>
             <Card>
@@ -109,8 +106,8 @@ const Form = (props) => {
                             return (<HookFormInput {...attributes}  />)
                         })}
                     </CardContent>
-                    <CardActions>
-                        <Button disabled={isSubmitDisabled} variant="contained" type="submit" size="large">
+                    <CardActions style={{justifyContent: 'center'}}>
+                        <Button color="primary" disabled={isSubmitDisabled} variant="contained" type="submit" size="large">
                             {props.loading ? <CircularProgress size={24} color="inherit" /> : props.buttonTitle}
                         </Button>
                     </CardActions>                    

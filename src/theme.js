@@ -27,6 +27,20 @@ export default createMuiTheme({
             textPrimary: {
                 color: colors.white
             },
+        },
+        MuiFab: {
+            primary: {
+                background: backgroundColors.orangeGradient,
+                backgroundColor: 'none',
+                borderRadius: '30px',
+                '&:hover': {
+                    backgroundColor: 'none'
+                },
+                '&.Mui-disabled': {
+                    background: backgroundColors.disabled,
+                },
+                color: colors.white
+            }
         }
     }
 });

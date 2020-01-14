@@ -9,6 +9,8 @@ import {
     Redirect,
 
   } from "react-router-dom";
+import { Container } from '@material-ui/core';
+import SingleProject from './pages/SingleProject';
 
 const firestore = firebase.firestore();
 
@@ -23,23 +25,20 @@ export default () => {
     const match = useRouteMatch();
     const path = match.path;
     
-    
-
-
-
     return (
-        <div style={style.Dashboard}>
+        <Container style={style.Dashboard}>
             <Switch>
+            <Route path={`${path}/projects/:id`}>
+                <SingleProject />
+                </Route>
                 <Route path={`${path}/projects`}>
                     <Projects />
                 </Route>
-                <Route path={`${path}/projects/:id`}>
-                    {/* <SingleProject id={} /> */}
-                </Route>
+               
                 <Route>
                     <Redirect to={`${path}/projects`} />
                 </Route>
             </Switch>
-        </div>
+        </Container>
     );
 }

@@ -1,45 +1,80 @@
-import React, {useState} from 'react';
-import * as yup from 'yup';
-import Form from '../../access/components/Form';
-import {
-  useHistory
-} from "react-router-dom";
-
+import React, {useState, useEffect} from 'react';
+import {useRouteMatch} from 'react-router-dom';
+import Fab from '@material-ui/core/Fab';
 import api from '../../utils/api';
-
-const createProjectSchema = yup.object().shape({
-  name: yup.string().required().meta({label: 'Nombre'}),
-  companyName: yup.string().required().meta({label: 'Nombre de Empresa'}),
-  contactName: yup.string().required().meta({label: 'Nombre de Contacto'}),
-  contactEmail: yup.string().email().required().meta({label: 'Email de Contacto'}),
-  contactPhone: yup.string().required().meta({label: 'Telefono de Contactor'}),
-  requirements: yup.string().required().meta({label: 'Requerimientos',  typeInput: 'textArea'}),
-  numberParticipants: yup.number().min(1).required().meta({label: 'Numero Participantes', typeInput: 'number'}),
-});
+import UserDialog from '../components/UserDialog';
+import { Container, Grid, CardContent, Card, Chip } from '@material-ui/core';
+import { AccountCircle } from '@material-ui/icons';
 
 export default () => {
+  const match = useRouteMatch();
+  const projectId = match.params.id;
   const [loading, setLoading] = useState(false);
-  let history = useHistory();
-
+  const [project, setProject] = useState({})
+  const [isOpenModal, setisOpenModal] = useState(false)
+  
   const handleError = (error) => {
     console.log(error);
   };
-  const onSubmit = (data) => {
+
+  const toggleUserModal = (force) => {
+    setisOpenModal(force !== undefined ? force : !isOpenModal);
+  };
+
+  const getProject = () => {
     setLoading(true);
-    api.projects.create(data)
+    api.projects.get(projectId)
+      .then(project => setProject(project))
+      .catch(handleError)
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    if(!loading && !project.name) getProject();
+  })
+
+  const onSubmit = (data) => {
+
+    setLoading(true);
+    api.users.createPanelist({projectId: project.id, ...data})
       .then(() => {
-        history.push('/dashboard/projects')
+        toggleUserModal(false);
+        getProject();
       })
       .catch(handleError)
-      .finally(() => setLoading(false));  
-  };
+      .finally();
+  }
   
 
   return (
-    <div>
-      <h4 onClick={() => history.goBack()}>&lt; Atrás</h4>
-      <h1>Nuevo proyecto</h1>
-      <Form buttonTitle="Crear" formSchema={createProjectSchema} onSubmit={onSubmit} loading={loading} />                            
-    </div>
+    <React.Fragment>
+      <h1>{project.name}</h1>
+      <h2>Panelistas</h2>
+      <Container>
+        <Grid container spacing={3}>
+          {project.panel && project.panel.map((panelist, i) => (
+            <Grid item key={i}>
+              <Card>
+                <CardContent>
+                  <div style={{textAlign: 'center'}}>
+                    <AccountCircle style={{fontSize: '50px'}} />
+                  </div>
+                  <h2>{panelist.name}</h2>
+                  <Chip
+                    size="small"
+                    color="primary"
+                    label="Progress..."
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      <Fab onClick={() => toggleUserModal(true)} color="primary">+</Fab>
+      <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />
+    </React.Fragment>
   );
-}
+
+};

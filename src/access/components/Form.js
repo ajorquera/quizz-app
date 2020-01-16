@@ -82,7 +82,6 @@ const Form = (props) => {
                 <form onSubmit={handleSubmit(submit)}>
                     <CardContent className={classes.cardContent}>
                         {fields.map((field, i) => {
-
                             const attributes = {
                                 key: i,
                                 error: showError(field.name),
@@ -90,7 +89,7 @@ const Form = (props) => {
                                 name: field.name,
                                 label: field.label,
                                 margin: 'normal',
-                                type: field.typeInput,
+                                type: 'text',
                                 mode: "onChange",
                                 register,
                                 setValue
@@ -101,6 +100,14 @@ const Form = (props) => {
                             } else {
                                 attributes.helperText = showErrorMessage(field.name);
                                 attributes.component = <TextField />;
+
+                                if(field.typeInput === 'textArea') {
+                                    attributes.multiline = true;
+                                } 
+
+                                if(['number', 'password'].indexOf(field.typeInput) !== -1) {
+                                    attributes.type = field.typeInput;
+                                } 
                             }
 
                             return (<HookFormInput {...attributes}  />)
@@ -112,7 +119,7 @@ const Form = (props) => {
                         </Button>
                     </CardActions>                    
                     <CardContent className={classes.links}>
-                        {props.links.map((link, i) => (
+                        {Array.isArray(props.links) && props.links.map((link, i) => (
                             <div key={i}>   
                                 <Link to={link.to}>{link.label}</Link>
                             </div>

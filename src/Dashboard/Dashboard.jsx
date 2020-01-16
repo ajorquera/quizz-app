@@ -1,40 +1,33 @@
-import React, {useState, useEffect} from 'react';
-import firebase from 'firebase';
+import React from 'react';
 import Projects from './pages/Projects';
+  
+import { Container } from '@material-ui/core';
+import NewEditProject from './pages/NewEditProject';
+import SingleProject from './pages/SingleProject';
 
 import {
     Switch,
     Route,
     useRouteMatch,
     Redirect,
-
-  } from "react-router-dom";
-import { Container } from '@material-ui/core';
-import SingleProject from './pages/SingleProject';
-
-const firestore = firebase.firestore();
-
-const style = {
-    Dashboard: {
-       
-    }
-};
-
+} from "react-router-dom";
 
 export default () => {
     const match = useRouteMatch();
     const path = match.path;
     
     return (
-        <Container style={style.Dashboard}>
+        <Container>
             <Switch>
-            <Route path={`${path}/projects/:id`}>
-                <SingleProject />
+                <Route path={`${path}/projects/new`}>
+                    <NewEditProject />
+                </Route>
+                <Route path={`${path}/projects/:id`}>
+                    <SingleProject />
                 </Route>
                 <Route path={`${path}/projects`}>
                     <Projects />
                 </Route>
-               
                 <Route>
                     <Redirect to={`${path}/projects`} />
                 </Route>

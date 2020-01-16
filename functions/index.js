@@ -1,4 +1,4 @@
-const functions    = require('firebase-functions');
-const onCreateUser = require('./background/onCreateUser');
+const functions        = require('firebase-functions');
+const onCreateAuthUser = require('./background/onCreateAuthUser');
 
-exports.onCreateUser = functions.auth.user().onCreate(onCreateUser);
+exports.onCreateAuthUser = functions.auth.user().onCreate(onCreateAuthUser);

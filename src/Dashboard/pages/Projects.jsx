@@ -3,14 +3,11 @@ import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import firebase from '../../utils/firebase';
 import {
   useHistory
 } from "react-router-dom";
 import { Grid } from '@material-ui/core';
-const firestore = firebase.firestore();
-
-
+import api from '../../utils/api';
 
 export default () => {
   const [projects, setProjects] = useState([]);
@@ -19,21 +16,15 @@ export default () => {
   const history = useHistory();
   const getProjects = () => {
     setLoading(true);
-    const projects = [];
 
-    return firestore.collection('projects').get().then(querySnap => {
-        querySnap.forEach(snapDoc => {
-            const project = {id: snapDoc.id, ...snapDoc.data()};
-            projects.push(project);
-        });
-
+    return api.projects.get().then(projects => {
         setProjects(projects);
         setIsDataLoaded(true);
     }).finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    if(!isDataLoaded) getProjects();
+    if(!isDataLoaded && !loading) getProjects();
   });
 
   return (
@@ -41,9 +32,9 @@ export default () => {
       <h1 style={{textAlign: 'center'}}>Projects</h1>
       <Container style={{border: '1px solid black', paddingTop: '10px', paddingBottom: '10px'}}>
         <Grid container spacing={3}>
-          {projects.map(project => (
-            <Grid item>
-              <Card>
+          {projects.map((project, i) => (
+            <Grid key={i} item>
+              <Card onClick={() => history.push(`/dashboard/projects/${project.id}`)}>
                 <CardContent>
                   <h1>{project.name}</h1>
                   <p>{project.requirements}</p>

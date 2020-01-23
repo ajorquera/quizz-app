@@ -1,8 +1,8 @@
 const express   = require('express')
-const helloWorld = require('./controllers/helloWorld');
+const notifications = require('./controllers/notifications.controller');
 
 const router = express.Router();
 
-router.use('/hello', helloWorld);
+router.post('/notifications', notifications);
 
 module.exports = router;

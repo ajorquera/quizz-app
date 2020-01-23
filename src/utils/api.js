@@ -1,5 +1,7 @@
 import firebase from 'utils/firebase';
-import Project from '../Dashboard/classes/Project';
+import Project from './classes/Project';
+import { Endpoint } from './classes/RestApi';
+const url = process.env.REACT_APP_FIREBASE_API_DOMAIN;
 
 const firestore = firebase.firestore();
 const auth = firebase.auth();
@@ -10,7 +12,6 @@ const api = {};
 const extractFirestoreData = async function extractFirestoreData(docRef) {
     const id = docRef.id;
     const data = docRef.data();
-    
     return {id, ...data};
 }
 
@@ -26,14 +27,25 @@ api.users = {
     },
     createPanelist: async (data) => {
         let project = await api.projects.get(data.projectId);
-        project.panel = project.panel || [];
 
-        const docRef = await firestore.collection('users').add(data);
-        project.panel.push({id: docRef, ...data});
+        project.panel.push({...data});
 
         await firestore.collection('projects').doc(data.projectId).update({
             panel: project.panel
         });
+
+        return project.panel;
+    },
+    deletePanelist: async (panelist) => {
+        const {projectId, id} = panelist;
+        let project = await api.projects.get(projectId);
+        const panel = project.panel;
+        const panelistIndex = panel.findIndex(item => item.id === id);
+
+        if(panelistIndex >= 0) {
+            panel.splice(panelistIndex , 1);
+            await firestore.collection('projects').doc(projectId).update({panel});
+        }
     }
 };
 api.auth = {
@@ -59,14 +71,13 @@ api.projects = {
                     const project = {id: snapDoc.id, ...snapDoc.data()};
                     projects.push(new Project(project));
                 });
-
-
-
                 return projects;
             }); 
         }
 
     }
 };
+
+api.notifications = new Endpoint(`/notifications`, {baseUrl: url});
 
 export default api;

@@ -10,7 +10,7 @@ import { HookFormInput } from "react-hook-form-input";
 import { makeStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types';
 
-import Link from "access/components/Link";
+import Link from "./Link";
 import { FormControlLabel, Checkbox, FormHelperText, FormControl } from '@material-ui/core';
 
 const useStyles = makeStyles({

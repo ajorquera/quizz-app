@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import register from './utils/registerServiceWorker';
+import App from './App';
+
 import './utils/firebase';
-import App from './App/App';
-import register from './registerServiceWorker';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

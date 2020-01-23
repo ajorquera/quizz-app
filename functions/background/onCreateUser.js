@@ -1,8 +1,9 @@
-const firebase = require('../utils/firebase');
+const firebase = require('../utils/firebase')
+const auth = firebase.auth();
 const firestore = firebase.firestore();
 
-module.exports = (user) => {
-    return firestore.collection('users').doc(user.uid).set({
-        type: 'user'
-    });
+module.exports = (change, context) => {
+  const userID = context.params.userId;
+
+
 }

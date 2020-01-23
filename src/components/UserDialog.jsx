@@ -5,7 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as yup from 'yup';
 
-import Form from '../../access/components/Form';
+import Form from './Form';
 
 const userSchema = yup.object().shape({
   name: yup.string().required().meta({label: 'Nombre'}),

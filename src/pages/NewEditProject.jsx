@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import * as yup from 'yup';
-import Form from '../../access/components/Form';
+import Form from '../components/Form';
 import {
   useHistory
 } from "react-router-dom";
 
-import api from '../../utils/api';
-import firebase from '../../utils/firebase';
-import Project from '../classes/Project';
+import api from '../utils/api';
+import firebase from '../utils/firebase';
+import Project from '../utils/Project';
 
 const createProjectSchema = yup.object().shape({
   name: yup.string().required().meta({label: 'Nombre'}),

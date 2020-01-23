@@ -3,7 +3,11 @@ import * as yup from 'yup';
 
 export default class Project {
   constructor(opts) {
-    Project.propSchema.validateSync(opts);
+    try {
+      Project.propSchema.validateSync(opts);
+    } catch(error) {
+      console.log(error);
+    }
 
     Project.copyToObject(this, opts, this._getNameProps());
 

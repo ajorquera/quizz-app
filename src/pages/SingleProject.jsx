@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {useRouteMatch} from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
-import api from '../../utils/api';
+import api from '../utils/api';
 import UserDialog from '../components/UserDialog';
-import { Container, Grid, CardContent, Card, Chip } from '@material-ui/core';
-import { AccountCircle } from '@material-ui/icons';
+import { Container, Grid } from '@material-ui/core';
+import PanelistCard from '../components/PanelistCard';
 
 export default () => {
   const match = useRouteMatch();
@@ -46,33 +46,44 @@ export default () => {
   }
   
 
+  const deleteUser = (panelist) => {
+    api.users.deletePanelist({...panelist, projectId: project.id}).then(() => {
+      getProject();
+    });
+  };
+
+  const onClickMenu = (type, panelist) => {
+    switch(type) {
+      case 'sendSms':
+        api.notifications.create({
+          to: panelist.phone,
+          text: 'hola'
+        });
+        break;
+      
+      case 'delete': 
+        api.users.deletePanelist(panelist).then(() => getProject())
+        break;
+
+      default: 
+    }
+  };
+
   return (
     <React.Fragment>
       <h1>{project.name}</h1>
       <h2>Panelistas</h2>
       <Container>
         <Grid container spacing={3}>
-          {project.panel && project.panel.map((panelist, i) => (
-            <Grid item key={i}>
-              <Card>
-                <CardContent>
-                  <div style={{textAlign: 'center'}}>
-                    <AccountCircle style={{fontSize: '50px'}} />
-                  </div>
-                  <h2>{panelist.name}</h2>
-                  <Chip
-                    size="small"
-                    color="primary"
-                    label="Progress..."
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
+          {project.panel && project.panel.map((item, i) => (
+              <Grid item key={i} xs={3}>
+                <PanelistCard name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
+              </Grid>
           ))}
         </Grid>
       </Container>
 
-      <Fab onClick={() => toggleUserModal(true)} color="primary">+</Fab>
+      <Fab style={{float: 'right'}} onClick={() => toggleUserModal(true)} color="primary">+</Fab>
       <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />
     </React.Fragment>
   );

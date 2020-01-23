@@ -17,7 +17,7 @@ import {
     useRouteMatch
   } from "react-router-dom";
 
-import Form from './components/Form';
+import Form from '../components/Form';
 
 const firestore = firebase.firestore();
 
@@ -76,10 +76,7 @@ const registerSchema = yup.object().shape({
     termsConditions: yup.boolean().oneOf([true]).required().meta({label: 'Acepto los Terminos y Condiciones', typeInput: 'checkbox'}),
 });
 
-const loginLinks = [
-    {to: '/access/register', label:"registro"},
-    {to: '/access/forgot-password', label:"Olvide mi contraseña"},
-];
+
 
 const loginLink = {to: '/access/login', label:"login"}
 

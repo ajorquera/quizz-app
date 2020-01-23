@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import {useHistory} from "react-router-dom";
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import {
-  useHistory
-} from "react-router-dom";
 import { Grid } from '@material-ui/core';
-import api from '../../utils/api';
+
+import api from '../utils/api';
 
 export default () => {
   const [projects, setProjects] = useState([]);
@@ -34,7 +33,7 @@ export default () => {
         <Grid container spacing={3}>
           {projects.map((project, i) => (
             <Grid key={i} item>
-              <Card onClick={() => history.push(`/dashboard/projects/${project.id}`)}>
+              <Card onClick={() => history.push(`/projects/${project.id}`)}>
                 <CardContent>
                   <h1>{project.name}</h1>
                   <p>{project.requirements}</p>

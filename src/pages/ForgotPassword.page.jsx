@@ -2,13 +2,13 @@ import * as yup from 'yup';
 import React, {useState} from 'react';
 import { useSnackbar } from 'notistack';
 
-import Form from '../components/Form';
 import api from '../utils/api';
+import MakeForm from '../components/MakeForm/MakeForm';
+import AccessFormView from '../components/AccessFormView';
 
-const forgoPasswordSchema = yup.object().shape({
-    email: yup.string().email().required().meta({label: 'Email'})
-});
-
+const forgoPasswordSchema = [
+    {name: 'email', label: 'Email', validation: yup.string().email().required().meta({label: 'Email'})}
+];
 
 const loginLink = {to: '/login', label:"login"}
 
@@ -36,6 +36,8 @@ export default () => {
     }
 
     return (
-        <Form buttonTitle="Resetear Contraseña" links={[loginLink]} formSchema={forgoPasswordSchema} onSubmit={forgotPassword} loading={loading} />                            
+        <AccessFormView title="Resetear Contraseña" links={[loginLink]}>
+            <MakeForm buttonTitle="Reset" schema={forgoPasswordSchema} onSubmit={forgotPassword} loading={loading} />                            
+        </AccessFormView>
     )
 };

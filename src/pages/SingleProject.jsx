@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {useRouteMatch} from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
+import uniqueId from 'lodash.uniqueid';
 import api from '../utils/api';
 import UserDialog from '../components/UserDialog';
 import { Container, Grid } from '@material-ui/core';
 import PanelistCard from '../components/PanelistCard';
+import NotificationDialog from '../components/NotificationDialog';
 
 export default () => {
   const match = useRouteMatch();
@@ -12,6 +14,8 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState({})
   const [isOpenModal, setisOpenModal] = useState(false)
+  const [panelist, setPanelist] = useState(null)
+  const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false)
   
   const handleError = (error) => {
     console.log(error);
@@ -34,9 +38,9 @@ export default () => {
   })
 
   const onSubmit = (data) => {
-
+    const id = uniqueId('userID-');
     setLoading(true);
-    api.users.createPanelist({projectId: project.id, ...data})
+    api.users.createPanelist({projectId: project.id, ...data, id})
       .then(() => {
         toggleUserModal(false);
         getProject();
@@ -52,17 +56,19 @@ export default () => {
     });
   };
 
+  const openInvitationDialog = (userInfo) => {
+    setPanelist(userInfo)
+    setIsOpenNotificationModal(true);
+  }
+
   const onClickMenu = (type, panelist) => {
     switch(type) {
       case 'sendSms':
-        api.notifications.create({
-          to: panelist.phone,
-          text: 'hola'
-        });
+        openInvitationDialog(panelist);
         break;
       
       case 'delete': 
-        api.users.deletePanelist(panelist).then(() => getProject())
+        deleteUser(panelist);
         break;
 
       default: 
@@ -76,7 +82,7 @@ export default () => {
       <Container>
         <Grid container spacing={3}>
           {project.panel && project.panel.map((item, i) => (
-              <Grid item key={i} xs={3}>
+              <Grid item key={i} md={3} sm={6} xs={12} >
                 <PanelistCard name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
               </Grid>
           ))}
@@ -85,6 +91,7 @@ export default () => {
 
       <Fab style={{float: 'right'}} onClick={() => toggleUserModal(true)} color="primary">+</Fab>
       <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />
+      <NotificationDialog title="Enviar invitación" open={isOpenNotificationModal} onClose={() => setIsOpenNotificationModal(false)} data={panelist} />
     </React.Fragment>
   );
 

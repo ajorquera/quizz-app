@@ -24,7 +24,7 @@ export default (props) => {
   return (
     <Card style={styles.container}>
       <CardContent>
-        <IconButton onClick={handleClick} style={{position: 'absolute', right: 0}}>
+        <IconButton size="small" onClick={handleClick} style={{position: 'absolute', right: 10}}>
           <MoreVert />
         </IconButton>
         <Menu

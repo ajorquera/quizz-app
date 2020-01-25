@@ -3,13 +3,15 @@ import React, {useState} from 'react';
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 
-import Form from '../components/Form';
+import MakeForm from '../components/MakeForm';
 import api from '../utils/api';
 
-const loginSchema = yup.object().shape({
-    email: yup.string().email().required().meta({label: 'Email'}),
-    password: yup.string().min(6).required().meta({label: 'Contraseña', typeInput: 'password'})
-});
+import AccessFormView from '../components/AccessFormView';
+
+const loginSchema = [
+    {name: 'email', label: 'Email', type: 'text', validation: yup.string().email().required()},
+    {name: 'password', label: 'Contraseña', type: 'password', validation: yup.string().min(6).required()},
+];
 
 const loginLinks = [
     {to: '/register', label:"Registro"},
@@ -40,6 +42,8 @@ export default () => {
     };
 
     return (
-        <Form buttonTitle="Login" links={loginLinks} formSchema={loginSchema} onSubmit={loginUser} loading={loading} />
+        <AccessFormView title="Login" links={loginLinks}>
+            <MakeForm buttonTitle="Login" links={loginLinks} schema={loginSchema} onSubmit={loginUser} loading={loading} />
+        </AccessFormView>
     )
 };

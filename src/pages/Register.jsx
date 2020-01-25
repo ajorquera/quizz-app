@@ -4,19 +4,21 @@ import { useHistory } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import firebase from 'utils/firebase';
 
-import Form from '../components/Form';
 import api from '../utils/api';
+import AccessFormView from '../components/AccessFormView';
+import MakeForm from '../components/MakeForm/MakeForm';
+
 const firestore = firebase.firestore();
 
-const registerSchema = yup.object().shape({
-    email: yup.string().email().required().meta({label: 'Email'}),
-    companyName: yup.string().required().meta({label: 'Nombre de Empresa'}),
-    phone: yup.string().required().meta({label: 'Teléfono'}),
-    website: yup.string().required().meta({label: 'Web'}),
-    country: yup.string().required().meta({label: 'País'}),
-    password: yup.string().min(6).required().meta({label: 'Contraseña', typeInput: 'password'}),
-    termsConditions: yup.boolean().oneOf([true]).required().meta({label: 'Acepto los Terminos y Condiciones', typeInput: 'checkbox'}),
-});
+const registerSchema = [
+    {name: 'email', label: 'Label', type: 'text', validation: yup.string().email().required()},
+    {name: 'companyName', label: 'Nombre de Empresa', type: 'text', validation: yup.string().required()},
+    {name: 'phone', label: 'Teléfono', type: 'text', validation:  yup.string().required()},
+    {name: 'website', label: 'Web', type: 'text', validation:  yup.string().required()},
+    {name: 'country', label: 'País', type: 'text', validation:  yup.string().required()},
+    {name: 'password', label: 'Contraseña', type: 'password', validation:  yup.string().min(6).required()},
+    {name: 'termsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
+];
 
 const loginLink = {to: '/login', label:"login"}
 
@@ -30,6 +32,7 @@ export default () => {
     }
 
     const registerUser = (data) => {
+        
         const {email, password} = data;
 
         const promise = api.auth.register(email, password).then(auth => {
@@ -59,6 +62,8 @@ export default () => {
     }
 
     return (
-        <Form buttonTitle="Registar" links={[loginLink]} formSchema={registerSchema} onSubmit={registerUser} loading={loading} />                            
+        <AccessFormView title="Registrar" links={[loginLink]}>
+            <MakeForm buttonTitle="Registar" schema={registerSchema} onSubmit={registerUser} loading={loading} />                            
+        </AccessFormView>
     )
 };

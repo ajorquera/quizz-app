@@ -5,13 +5,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as yup from 'yup';
 
-import Form from './Form';
+import MakeForm from './MakeForm';
 
-const userSchema = yup.object().shape({
-  name: yup.string().required().meta({label: 'Nombre'}),
-  phone: yup.string().required().meta({label: 'Telefono'}),
-  email: yup.string().required().meta({label: 'Email'}),
-});
+const userSchema = [
+  {name: 'name', label: 'Nombre', validation: yup.string().required()},
+  {name: 'phone', label: 'Telefono', validation: yup.string().required()},
+  {name: 'email', label: 'Email', validation: yup.string().required()},
+];
 
 export default (props) => {
 
@@ -23,7 +23,7 @@ export default (props) => {
     <Dialog open={props.open} onClose={() => closeModal()}>
       <DialogContent>
         <DialogTitle >Panelista</DialogTitle>
-        <Form buttonTitle="Crear" formSchema={userSchema} onSubmit={props.onSubmit} loading={props.loading} />                            
+        <MakeForm buttonTitle="Crear" schema={userSchema} onSubmit={props.onSubmit} loading={props.loading} />                            
       </DialogContent>
     </Dialog>
   );

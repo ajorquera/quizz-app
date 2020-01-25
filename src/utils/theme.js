@@ -28,6 +28,11 @@ export default createMuiTheme({
                 color: colors.white
             },
         },
+        MuiAppBar: {
+            root: {
+                backgroundImage: backgroundColors.orangeGradient
+            }
+        },
         MuiFab: {
             primary: {
                 background: backgroundColors.orangeGradient,

@@ -59,6 +59,7 @@ const MakeForm = (props)  => {
     switch(fieldType) {
       case 'text':
       case 'password':
+      case 'number':
         component = (
           <Controller 
             {...commonProps}

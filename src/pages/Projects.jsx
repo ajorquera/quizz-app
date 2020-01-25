@@ -5,13 +5,27 @@ import Fab from '@material-ui/core/Fab';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { Grid } from '@material-ui/core';
+import * as yup from 'yup';
 
 import api from '../utils/api';
+import BaseDialog from '../components/BaseDialog';
+import MakeForm from '../components/MakeForm/MakeForm';
+
+const projectSchema = [
+  {name: 'name', label: 'Nombre', validation: yup.string().required()},
+  {name: 'companyName', label: 'Nombre Compañia', validation: yup.string().required()},
+  {name: 'contactName', label: 'Nombre de Contacto', validation: yup.string().required()},
+  {name: 'contactEmail', label: 'Email de Contacto', validation: yup.string().required()},
+  {name: 'contactPhone', label: 'Telefono de Contacto', validation: yup.string().required()},
+  {name: 'requirements', label: 'Requerimiento', type: 'textarea', validation: yup.string().required()},
+  {name: 'numberParticipants', label: 'Numero participantes', type: 'number', validation: yup.number().min(1).required()},
+];
 
 export default () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [openProjectModal, setOpenProjectModal] = useState(false)
   const history = useHistory();
   const getProjects = () => {
     setLoading(true);
@@ -25,6 +39,10 @@ export default () => {
   useEffect(() => {
     if(!isDataLoaded && !loading) getProjects();
   });
+
+  const onSubmitProject = () => {
+
+  }
 
   return (
     <React.Fragment>
@@ -43,7 +61,11 @@ export default () => {
           ))}
         </Grid>
       </Container>
-      <Fab style={{float: 'right'}} color="primary" onClick={() => history.push('/dashboard/projects/new')}>+</Fab>
+      <Fab style={{float: 'right'}} color="primary" onClick={() => setOpenProjectModal(true)}>+</Fab>
+
+      <BaseDialog open={openProjectModal} title="Proyecto" onClose={() => setOpenProjectModal(false)}>
+        <MakeForm buttonTitle="Guardar" schema={projectSchema} onSubmit={onSubmitProject} loading={loading} />
+      </BaseDialog>
     </React.Fragment>
   );
 }

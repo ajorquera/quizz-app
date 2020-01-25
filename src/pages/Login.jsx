@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import React, {useState} from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 
 import MakeForm from '../components/MakeForm';
@@ -19,11 +19,16 @@ const loginLinks = [
     {to: '/projects', label:"Proyectos"},
 ];
 
+const DEFAULT_REDIRECT = '/dashboard';
+
 export default () => {
     const { enqueueSnackbar } = useSnackbar();
     let history = useHistory();
-    const goToDashboard = () => history.push('/dashboard');
-    
+    let location = useLocation();
+
+    const queryParams = new URLSearchParams(location.search);
+    const redirect = queryParams.get('redirect');
+
     const [loading, setLoading] = useState(false);
     const handleError = (error) => {
         enqueueSnackbar(error.message)
@@ -38,7 +43,9 @@ export default () => {
     }
 
     const loginUser = ({email, password}) => {
-        request(api.auth.login(email, password)).then(goToDashboard)
+        request(api.auth.login(email, password)).then(() => {
+            history.push(redirect || DEFAULT_REDIRECT);
+        })
     };
 
     return (

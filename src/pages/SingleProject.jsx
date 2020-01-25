@@ -1,17 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {useRouteMatch} from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
 import uniqueId from 'lodash/uniqueId';
 import api from '../utils/api';
 import UserDialog from '../components/UserDialog';
-import { Container, Grid } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import PanelistCard from '../components/PanelistCard';
 import NotificationDialog from '../components/NotificationDialog';
 
 export default () => {
   const match = useRouteMatch();
   const projectId = match.params.id;
-  const [loading, setLoading] = useState(false);
   const [project, setProject] = useState({})
   const [isOpenModal, setisOpenModal] = useState(false)
   const [panelist, setPanelist] = useState(null)
@@ -25,21 +24,19 @@ export default () => {
     setisOpenModal(force !== undefined ? force : !isOpenModal);
   };
 
-  const getProject = () => {
-    setLoading(true);
+  const getProject = useCallback(() => {
     api.projects.get(projectId)
       .then(project => setProject(project))
-      .catch(handleError)
-      .finally(() => setLoading(false))
-  }
+      .catch(handleError);
+     
+  }, [projectId])
 
   useEffect(() => {
-    if(!loading && !project.name) getProject();
-  })
+    getProject();
+  }, [getProject]);
 
   const onSubmit = (data) => {
     const id = uniqueId('userID-');
-    setLoading(true);
     api.users.createPanelist({projectId: project.id, ...data, id})
       .then(() => {
         toggleUserModal(false);
@@ -79,15 +76,13 @@ export default () => {
     <React.Fragment>
       <h1>{project.name}</h1>
       <h2>Panelistas</h2>
-      <Container>
         <Grid container spacing={3}>
           {project.panel && project.panel.map((item, i) => (
-              <Grid item key={i} md={3} sm={6} xs={12} >
+              <Grid item key={i} sm={6} xs={12} >
                 <PanelistCard name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
               </Grid>
           ))}
         </Grid>
-      </Container>
 
       <Fab style={{float: 'right'}} onClick={() => toggleUserModal(true)} color="primary">+</Fab>
       <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />

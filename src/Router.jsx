@@ -11,45 +11,33 @@ import SingleProject from "./pages/SingleProject";
 import {
   BrowserRouter as Router,
   Switch,
-  Redirect,
   Route,
 } from "react-router-dom";
 import Projects from "./pages/Projects";
 import PickUser from "./pages/PickUser.page";
+import Invitation from "./pages/Invitation.page";
+import {ProtectedRoute} from "./components/Auth";
+
+const createDashboardView = (Component) => () => (<DashboardView><Component /></DashboardView>)
+const createAccessView = (Component) => () => (<AccessView><Component /></AccessView>)
 
 export default () => {
+
   return (
     <Router>
       <Switch>
-        <Route path="/projects/:id">
-          <DashboardView>
-            <SingleProject />
-          </DashboardView>
-        </Route>
-        <Route path="/projects">
-          <DashboardView>
-            <Projects />
-          </DashboardView>
-        </Route>
-        <Route path="/login">
-          <AccessView>
-            <Login />
-          </AccessView>
-        </Route>
+        <ProtectedRoute path="/projects/:id" redirect="/login" component={createDashboardView(SingleProject)} />
+        <ProtectedRoute path="/projects" redirect="/login" component={createDashboardView(Projects)} />
+        <ProtectedRoute path="/invitation/:projectId" redirect="/login" component={createDashboardView(Invitation)} />
+          
+        <Route path="/login" component={createAccessView(Login)} />
         <Route path="/register">
           <AccessView>
             <Route path="/register/:typeUser" component={Register}/>
             <Route path="/register" exact component={PickUser}/>
           </AccessView>
         </Route>
-        <Route path="/forgot-password">
-          <AccessView>
-            <ForgotPassword />
-          </AccessView>
-        </Route>
-        <Route>
-          <Redirect to="/projects" />
-        </Route>
+        <Route path="/forgot-password" component={createAccessView(ForgotPassword)} />
       </Switch>
     </Router>
   );

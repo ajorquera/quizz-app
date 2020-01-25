@@ -1,28 +1,63 @@
-import React from 'react';
-import {useHistory} from 'react-router-dom';
-import firebase from '../utils/firebase';
+import React, {useState, useEffect} from 'react'
+import {Route, Redirect} from 'react-router-dom'
+import firebase from '../utils/firebase'
+
 const auth = firebase.auth();
 
-export default ({children, ...props}) => {
-  const history = useHistory();
+export const createGuardRoute = redirect => Component => {
+  class Guard extends React.Component {
+    render() {
+      const {match, history} = this.props;
+      const {isAuth, user} = this.state;
 
-
-  React.useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if(user && typeof props.onAuthorized === 'function') {
-        props.onAuthorized(history);
-      } else if(typeof props.onUnathorized === 'function') {
-        props.onUnathorized(history);
+      if(isAuth && !user) {
+        history.push({pathname: redirect, search: `?redirect=${match.path}`});
+      } else {
+        return (
+          Route
+        );
       }
+    }
+  }
+
+  return Guard;
+}
+
+export const ProtectedRoute = ({component, redirect, ...props}) => {
+  const {isAuth, user} = useAuth();
+  const Component = component;
+  return (
+    <Route
+      {...props}
+      render={(props) => {
+        const {match} = props;
+        if(isAuth && !user) {
+          return (<Redirect to={{
+            pathname: redirect,
+            search: `?redirect=${match.url}`
+          }} />)
+        } else if(isAuth) {
+          return (
+            <Component {...props} />
+          )
+        }
+      }}
+    />
+  );
+}
+
+export const useAuth = () => {
+  const [user, setUser] = useState(null);
+  const [isAuth, setIsAuth] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      setUser(user);
+      setIsAuth(true);
     });
 
-    return () => unsubscribe(); 
-
+    return unsubscribe;
   }, []);
 
-  return (
-    <props.component {...props}>
-      {children}
-    </props.component>
-  );
+  return {user, isAuth};
 };

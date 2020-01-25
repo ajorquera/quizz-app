@@ -24,7 +24,7 @@ const AccessFormView = (props) => {
   }
 
   return (
-    <Paper style={styles.container}>
+    <Paper style={{...styles.container , ...props.style}}>
       {props.back && (
         <Button onClick={goBack}>&lt; Atrás</Button>
       )}

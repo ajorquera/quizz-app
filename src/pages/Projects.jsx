@@ -24,7 +24,6 @@ const projectSchema = [
 export default () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [openProjectModal, setOpenProjectModal] = useState(false)
   const history = useHistory();
   const getProjects = () => {
@@ -32,13 +31,12 @@ export default () => {
 
     return api.projects.get().then(projects => {
         setProjects(projects);
-        setIsDataLoaded(true);
     }).finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    if(!isDataLoaded && !loading) getProjects();
-  });
+    getProjects();
+  }, []);
 
   const onSubmitProject = () => {
 

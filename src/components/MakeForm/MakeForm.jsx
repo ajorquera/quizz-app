@@ -46,7 +46,8 @@ const MakeForm = (props)  => {
       control,
       name: field.name,
       defaultValue: field.value,
-      label: field.label
+      label: field.label,
+      disabled: field.disabled
     }
     
     const textProps = {
@@ -78,8 +79,9 @@ const MakeForm = (props)  => {
             {...textProps}
             as={TextField} 
             style={styles.textarea} 
-            rows="4" 
+            rows={field.rows || 4}
             multiline 
+            variant="outlined"
           />
         )
         break;

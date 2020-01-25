@@ -3,7 +3,7 @@ import React from "react";
 import AccessView from './components/AccessView'
 
 import Login from "./pages/Login";
-import Register from "./pages/Register.jsx";
+import Register from "./pages/Register.page";
 import ForgotPassword from "./pages/ForgotPassword.page.jsx";
 import DashboardView from "./pages/DashboardView";
 import SingleProject from "./pages/SingleProject";
@@ -15,6 +15,7 @@ import {
   Route,
 } from "react-router-dom";
 import Projects from "./pages/Projects";
+import PickUser from "./pages/PickUser.page";
 
 export default () => {
   return (
@@ -37,7 +38,8 @@ export default () => {
         </Route>
         <Route path="/register">
           <AccessView>
-            <Register />
+            <Route path="/register/:typeUser" component={Register}/>
+            <Route path="/register" exact component={PickUser}/>
           </AccessView>
         </Route>
         <Route path="/forgot-password">

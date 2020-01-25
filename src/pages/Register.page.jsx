@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import React, {useState} from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import firebase from 'utils/firebase';
 
@@ -10,9 +10,9 @@ import MakeForm from '../components/MakeForm/MakeForm';
 
 const firestore = firebase.firestore();
 
-const registerSchema = [
-    {name: 'email', label: 'Label', type: 'text', validation: yup.string().email().required()},
+const registerCompanySchema = [
     {name: 'companyName', label: 'Nombre de Empresa', type: 'text', validation: yup.string().required()},
+    {name: 'email', label: 'Email', type: 'text', validation: yup.string().email().required()},
     {name: 'phone', label: 'Teléfono', type: 'text', validation:  yup.string().required()},
     {name: 'website', label: 'Web', type: 'text', validation:  yup.string().required()},
     {name: 'country', label: 'País', type: 'text', validation:  yup.string().required()},
@@ -20,11 +20,19 @@ const registerSchema = [
     {name: 'termsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
 ];
 
-const loginLink = {to: '/login', label:"login"}
+const registerExpertSchema = [
+    {name: 'name', label: 'Nombre', type: 'text', validation: yup.string().required()},
+    {name: 'phone', label: 'Teléfono', type: 'text', validation: yup.string().required()},
+    {name: 'email', label: 'Email', type: 'text', validation:  yup.string().required()},
+    {name: 'password', label: 'Contraseña', type: 'password', validation:  yup.string().required()},
+    {name: 'termsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
+];
 
 export default () => {
     const { enqueueSnackbar } = useSnackbar();
     let history = useHistory();
+    let params = useParams();
+    const isExpert = params.typeUser === 'expert'
     
     const [loading, setLoading] = useState(false);
     const handleError = (error) => {
@@ -61,9 +69,15 @@ export default () => {
         return req;
     }
 
+    const title = isExpert ? 'Registrar Experto' : 'Registrar Compañia'
     return (
-        <AccessFormView title="Registrar" links={[loginLink]}>
-            <MakeForm buttonTitle="Registar" schema={registerSchema} onSubmit={registerUser} loading={loading} />                            
+        <AccessFormView back title={title}>
+            <MakeForm 
+                buttonTitle="Registar" 
+                schema={isExpert ? registerExpertSchema : registerCompanySchema} 
+                onSubmit={registerUser} 
+                loading={loading} 
+            />                            
         </AccessFormView>
     )
 };

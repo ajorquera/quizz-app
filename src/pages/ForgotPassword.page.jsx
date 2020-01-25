@@ -10,8 +10,6 @@ const forgoPasswordSchema = [
     {name: 'email', label: 'Email', validation: yup.string().email().required().meta({label: 'Email'})}
 ];
 
-const loginLink = {to: '/login', label:"login"}
-
 export default () => {
     const { enqueueSnackbar } = useSnackbar();
     
@@ -36,7 +34,7 @@ export default () => {
     }
 
     return (
-        <AccessFormView title="Resetear Contraseña" links={[loginLink]}>
+        <AccessFormView back title="Resetear Contraseña">
             <MakeForm buttonTitle="Reset" schema={forgoPasswordSchema} onSubmit={forgotPassword} loading={loading} />                            
         </AccessFormView>
     )

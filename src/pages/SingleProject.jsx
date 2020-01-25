@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useRouteMatch} from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
-import uniqueId from 'lodash.uniqueid';
+import uniqueId from 'lodash/uniqueId';
 import api from '../utils/api';
 import UserDialog from '../components/UserDialog';
 import { Container, Grid } from '@material-ui/core';

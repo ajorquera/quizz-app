@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {useHistory} from 'react-router-dom';
 import Link from './Link';
 import Paper from '@material-ui/core/Paper';
+import { Button } from '@material-ui/core';
 
 const styles = {
   container: {
@@ -16,8 +18,16 @@ const styles = {
 }
 
 const AccessFormView = (props) => {
+  const history = useHistory();
+  const goBack = () => {
+    history.goBack();
+  }
+
   return (
     <Paper style={styles.container}>
+      {props.back && (
+        <Button onClick={goBack}>&lt; Atrás</Button>
+      )}
       <h2 style={styles.title}>{props.title}</h2>
       {props.children}
       {props.links.map((link, i) => (

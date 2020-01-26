@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
+import {useSnackbar} from 'notistack';
 import AccessFormView from '../components/AccessFormView';
 import { Button, CircularProgress } from '@material-ui/core';
 import {apiService} from '../utils/services';
@@ -17,6 +19,8 @@ const styles = {
 }
 
 export default (props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const {projectId} = useParams();
   const {accessToken} = useAuth();
@@ -25,13 +29,25 @@ export default (props) => {
     Authorization: `Bearer ${accessToken}`
   };
 
+  const handleSuccess = () => {
+    enqueueSnackbar('Ya formas parte del proyecto. Vamos a redirigirte al dashboard');
+
+    setTimeout(() => {
+      history.push('/project');
+    }, 1500);    
+  }
+
+  const handleError = (error) => {
+    console.error(error);
+  }
+
   const onClick = () => {
     setLoading(true);
     console.log(apiService);
     
     apiService.invitation.create({
       projectId: projectId
-    }, {headers}).then().catch().finally(() => setLoading(false))
+    }, {headers}).then(handleSuccess).catch(handleError).finally(() => setLoading(false))
   };
 
   return (
@@ -39,7 +55,7 @@ export default (props) => {
       <p>Felicidades!!!</p>
       <p>Has sido invitado para formar parte de un nuevo proyecto. Para continuar debes aceptar la invitacion</p>
       <Button onClick={onClick} disabled={loading} size="large" color="primary" variant="contained" style={styles.button}>
-        {loading ? <CircularProgress size={24} color="inherit" /> : 'Aceptar Invitación'}
+        {loading ? <CircularProgress size={22} color="inherit" /> : 'Aceptar Invitación'}
       </Button>
     </AccessFormView>
   )

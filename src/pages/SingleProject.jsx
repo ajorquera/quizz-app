@@ -1,8 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {useRouteMatch} from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
-import uniqueId from 'lodash/uniqueId';
-import api from '../utils/services/api.service';
+import api from '../utils/services/firestore.service';
 import UserDialog from '../components/UserDialog';
 import Grid from '@material-ui/core/Grid';
 import PanelistCard from '../components/PanelistCard';
@@ -16,6 +15,14 @@ export default () => {
   const [panelist, setPanelist] = useState(null)
   const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false)
   
+  const uuid = (prefix='') => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return prefix + v.toString(16);
+    });
+  }
+  
+
   const handleError = (error) => {
     console.log(error);
   };
@@ -36,7 +43,7 @@ export default () => {
   }, [getProject]);
 
   const onSubmit = (data) => {
-    const id = uniqueId('userID-');
+    const id = uuid();
     api.users.createPanelist({projectId: project.id, ...data, id})
       .then(() => {
         toggleUserModal(false);

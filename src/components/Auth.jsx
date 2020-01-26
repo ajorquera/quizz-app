@@ -3,6 +3,7 @@ import {Route, Redirect} from 'react-router-dom'
 import firebase from '../utils/firebase'
 
 const auth = firebase.auth();
+const firestore = firebase.firestore();
 
 export const createGuardRoute = redirect => Component => {
   class Guard extends React.Component {
@@ -48,6 +49,7 @@ export const ProtectedRoute = ({component, redirect, ...props}) => {
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
+  const [firestoreUser, setFirestoreUser] = useState(null)
   const [isAuth, setIsAuth] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
 
@@ -58,7 +60,14 @@ export const useAuth = () => {
       if(user) {
         user.getIdToken(true).then(token => {
           setAccessToken(token);
-          setIsAuth(true);
+          firestore.collection('users').doc(user.uid).get().then((dataSnap) => {
+            const firestoreUser = {
+              id: user.uid,
+              ...dataSnap.data()
+            }
+            setFirestoreUser(firestoreUser)
+            setIsAuth(true);
+          })
         });
       } else {
         setIsAuth(true);
@@ -69,5 +78,5 @@ export const useAuth = () => {
     return unsubscribe;
   }, []);
 
-  return {user, isAuth, accessToken};
+  return {user, isAuth, accessToken, firestoreUser};
 };

@@ -18,6 +18,7 @@ import Projects from "./pages/Projects";
 import PickUser from "./pages/PickUser.page";
 import Invitation from "./pages/Invitation.page";
 import {ProtectedRoute} from "./components/Auth";
+import ExpertProject from "./pages/ExpertProject.page";
 
 const createDashboardView = (Component) => () => (<DashboardView><Component /></DashboardView>)
 const createAccessView = (Component) => () => (<AccessView><Component /></AccessView>)
@@ -29,6 +30,7 @@ export default () => {
       <Switch>
         <ProtectedRoute path="/projects/:id" redirect="/login" component={createDashboardView(SingleProject)} />
         <ProtectedRoute path="/projects" redirect="/login" component={createDashboardView(Projects)} />
+        <ProtectedRoute path="/project" redirect="/login" component={createDashboardView(ExpertProject)} />
         <ProtectedRoute path="/invitation/:projectId" redirect="/login" component={createAccessView(Invitation)} />
           
         <Route path="/login" component={createAccessView(Login)} />

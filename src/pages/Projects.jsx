@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import { Grid } from '@material-ui/core';
 import * as yup from 'yup';
 
-import api from '../utils/services/api.service';
+import api from '../utils/services/firestore.service';
 import BaseDialog from '../components/BaseDialog';
 import MakeForm from '../components/MakeForm/MakeForm';
 

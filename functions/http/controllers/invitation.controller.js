@@ -18,31 +18,26 @@ module.exports = async (req, res, next) => {
   const userSnap = await firestore.collection('users').doc(req.firebaseUser.uid).get();
   const data = userSnap.data();
   
-  if(userSnap.exists && data.type === 'expert') {
-    const projectSnap = await firestore.collection('projects').doc(body.projectId).get();
-    const projectData = projectSnap.data();
+  if(!userSnap.exists || data.type !== 'expert') return next({code: 'UNATHORIZED'});
+  
+  const projectSnap = await firestore.collection('projects').doc(body.projectId).get();
+  const projectData = projectSnap.data();
 
-    if(!projectSnap.exists) return next({code: 'NOT_FOUND', data: 'Project doesn\'t exist'});
+  if(!projectSnap.exists) return next({code: 'NOT_FOUND', data: 'Project doesn\'t exist'});
 
-    const panelist = projectData.panel.findIndex(panelist => panelist.email === user.email);
-    
-    if(!panelist) return next({code: 'NOT_FOUND', data: {message: 'User not found in panel'}});
+  const panelist = projectData.panel.find(panelist => panelist.email === user.email);
+  
+  if(!panelist) return next({code: 'NOT_FOUND', data: {message: 'User not found in panel'}});
 
-    panelist.uid = user.uid;
-    panelist.hasAcceptInvitation = true;
-    await projectSnap.ref.update({panel: projectData.panel});
-    await userSnap.ref.set({
-      project: {
-        name: projectData.name,
-        id: body.projectId
-      }
-    }, {merge: true});
-
-    
-
-  } else {
-    return next({code: 'UNATHORIZED'});
-  }
+  panelist.uid = user.uid;
+  panelist.hasAcceptInvitation = true;
+  await projectSnap.ref.update({panel: projectData.panel});
+  await userSnap.ref.set({
+    project: {
+      name: projectData.name,
+      id: body.projectId
+    }
+  }, {merge: true});
 
   return res.status(NO_CONTENT).end();
 };

@@ -1,4 +1,5 @@
  
 module.exports = {
-	handleErrors : require('./handleErrors'),
+  firebaseAuth: require('./firebaseAuth'),
+  handleError: require('./handleError')
 };

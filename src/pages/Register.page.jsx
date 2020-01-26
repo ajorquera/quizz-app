@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import firebase from 'utils/firebase';
 
-import api from '../utils/services/api.service';
+import api from '../utils/services/firestore.service';
 import AccessFormView from '../components/AccessFormView';
 import MakeForm from '../components/MakeForm/MakeForm';
 
@@ -17,7 +17,7 @@ const registerCompanySchema = [
     {name: 'website', label: 'Web', type: 'text', validation:  yup.string().required()},
     {name: 'country', label: 'País', type: 'text', validation:  yup.string().required()},
     {name: 'password', label: 'Contraseña', type: 'password', validation:  yup.string().min(6).required()},
-    {name: 'termsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
+    {name: 'acceptTermsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
 ];
 
 const registerExpertSchema = [
@@ -25,7 +25,7 @@ const registerExpertSchema = [
     {name: 'phone', label: 'Teléfono', type: 'text', validation: yup.string().required()},
     {name: 'email', label: 'Email', type: 'text', validation:  yup.string().required()},
     {name: 'password', label: 'Contraseña', type: 'password', validation:  yup.string().required()},
-    {name: 'termsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
+    {name: 'acceptTermsConditions', label: 'Acepto los Terminos y Condiciones', type: 'checkbox', validation: yup.boolean().oneOf([true]).required()},
 ];
 
 export default () => {
@@ -41,17 +41,14 @@ export default () => {
 
     const registerUser = (data) => {
         
-        const {email, password} = data;
+        const {email, password, ...rest} = data;
 
         const promise = api.auth.register(email, password).then(auth => {
             const user = auth.user;
 
             return firestore.collection('users').doc(user.uid).set({
-                phone: data.phone,
-                email,
-                companyName: data.companyName,
-                website: data.website,
-                country: data.country            
+                ...rest,
+                type: isExpert ? 'expert' : 'company'            
             })
         });
 

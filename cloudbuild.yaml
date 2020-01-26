@@ -17,6 +17,16 @@ steps:
 
   - name: "gcr.io/${PROJECT_ID}/firebase"
     args: [
+      "functions:config:set",
+      "-P",
+      "${PROJECT_ID}",
+      "twilio.accountsid=${_TWILIO_ACCOUNT_SID}",
+      "twilio.authtoken=${_TWILIO_AUTH_TOKEN}",
+      "twilio.fromphonenumber=${_TWILIO_FROM_PHONE_NUMBER}",
+    ]
+
+  - name: "gcr.io/${PROJECT_ID}/firebase"
+    args: [
       "deploy",
       "-P",
       "${PROJECT_ID}",

@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import React, {useState} from 'react';
 import { useSnackbar } from 'notistack';
 
-import api from '../utils/api';
+import api from '../utils/services/api.service';
 import MakeForm from '../components/MakeForm/MakeForm';
 import AccessFormView from '../components/AccessFormView';
 

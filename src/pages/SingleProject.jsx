@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {useRouteMatch} from 'react-router-dom';
 import Fab from '@material-ui/core/Fab';
 import uniqueId from 'lodash/uniqueId';
-import api from '../utils/api';
+import api from '../utils/services/api.service';
 import UserDialog from '../components/UserDialog';
 import Grid from '@material-ui/core/Grid';
 import PanelistCard from '../components/PanelistCard';
@@ -54,7 +54,7 @@ export default () => {
   };
 
   const openInvitationDialog = (userInfo) => {
-    setPanelist(userInfo)
+    setPanelist({...userInfo, projectId: project.id})
     setIsOpenNotificationModal(true);
   }
 

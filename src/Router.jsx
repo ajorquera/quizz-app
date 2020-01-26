@@ -11,6 +11,7 @@ import SingleProject from "./pages/SingleProject";
 import {
   BrowserRouter as Router,
   Switch,
+  Redirect,
   Route,
 } from "react-router-dom";
 import Projects from "./pages/Projects";
@@ -28,7 +29,7 @@ export default () => {
       <Switch>
         <ProtectedRoute path="/projects/:id" redirect="/login" component={createDashboardView(SingleProject)} />
         <ProtectedRoute path="/projects" redirect="/login" component={createDashboardView(Projects)} />
-        <ProtectedRoute path="/invitation/:projectId" redirect="/login" component={createDashboardView(Invitation)} />
+        <ProtectedRoute path="/invitation/:projectId" redirect="/login" component={createAccessView(Invitation)} />
           
         <Route path="/login" component={createAccessView(Login)} />
         <Route path="/register">
@@ -38,6 +39,9 @@ export default () => {
           </AccessView>
         </Route>
         <Route path="/forgot-password" component={createAccessView(ForgotPassword)} />
+        <Route path="/">
+          <Redirect to="/login" />
+        </Route>
       </Switch>
     </Router>
   );

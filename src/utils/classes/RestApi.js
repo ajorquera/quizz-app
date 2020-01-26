@@ -1,10 +1,10 @@
 class RestApi {
-  contructor(endpoints, config) {
+  constructor(endpoints, config) {
     Object.entries(endpoints).forEach(([key, value]) => {
-      return this[key] = new Endpoint(value.path, config);
+      this[key] = new Endpoint(value.path, config);
     });
 
-    this.config = Object.frozen(config);
+    this.config = Object.freeze(config);
   }
 }
 
@@ -12,7 +12,7 @@ class RestApi {
 class Endpoint {
   constructor(path, config) {
     this.path = path;
-    this.config = config;
+    this.config = Object.freeze(config);
   }
 
   create(data, config) {

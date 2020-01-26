@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import firebase from 'utils/firebase';
 
-import api from '../utils/api';
+import api from '../utils/services/api.service';
 import AccessFormView from '../components/AccessFormView';
 import MakeForm from '../components/MakeForm/MakeForm';
 

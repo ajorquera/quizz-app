@@ -5,7 +5,7 @@ import firebase from 'utils/firebase';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
-import api from '../utils/api';
+import {firestoreService} from '../utils/services';
 import { useSnackbar } from 'notistack';
 
 
@@ -107,13 +107,13 @@ export default (props) => {
     const goToDashboard = () => history.push('/dashboard');
 
     const loginUser = ({email, password}) => {
-        request(api.auth.login(email, password)).then(goToDashboard)
+        request(firestoreService.auth.login(email, password)).then(goToDashboard)
     };
 
     const registerUser = (data) => {
         const {email, password} = data;
 
-        const promise = api.auth.register(email, password).then(auth => {
+        const promise = firestoreService.auth.register(email, password).then(auth => {
             const user = auth.user;
 
             return firestore.collection('users').doc(user.uid).set({
@@ -131,7 +131,7 @@ export default (props) => {
     };
 
     const forgotPassword = ({email}) => {
-        request(api.auth.forgotPassword(email)).then(() => {
+        request(firestoreService.auth.forgotPassword(email)).then(() => {
             enqueueSnackbar('We have send an email to reset your password')
         });
     }

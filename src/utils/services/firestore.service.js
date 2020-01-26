@@ -1,13 +1,11 @@
 import firebase from 'utils/firebase';
-import Project from './classes/Project';
-import { Endpoint } from './classes/RestApi';
-const url = process.env.REACT_APP_FIREBASE_API_DOMAIN;
+import Project from '../classes/Project';
 
 const firestore = firebase.firestore();
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-const api = {};
+const firestoreService = {};
 
 const extractFirestoreData = async function extractFirestoreData(docRef) {
     const id = docRef.id;
@@ -15,7 +13,7 @@ const extractFirestoreData = async function extractFirestoreData(docRef) {
     return {id, ...data};
 }
 
-api.users = {
+firestoreService.users = {
     getMyInfo: async () => {
         const userAuth = auth.currentUser;
         const userDb = await firestore.collection('users').doc(userAuth.uid).get();
@@ -26,7 +24,7 @@ api.users = {
         
     },
     createPanelist: async (data) => {
-        let project = await api.projects.get(data.projectId);
+        let project = await firestoreService.projects.get(data.projectId);
 
         project.panel.push({...data});
 
@@ -38,7 +36,7 @@ api.users = {
     },
     deletePanelist: async (panelist) => {
         const {projectId, id} = panelist;
-        let project = await api.projects.get(projectId);
+        let project = await firestoreService.projects.get(projectId);
         const panel = project.panel;
         const panelistIndex = panel.findIndex(item => item.id === id);
 
@@ -48,13 +46,13 @@ api.users = {
         }
     }
 };
-api.auth = {
+firestoreService.auth = {
     login: (email, password) => auth.signInWithEmailAndPassword(email, password),
     loginWithGoogle: () => auth.signInWithPopup(googleProvider),
     register: (email, password) => auth.createUserWithEmailAndPassword(email, password),
     forgotPassword: email => auth.sendPasswordResetEmail(email)
 };
-api.projects = {
+firestoreService.projects = {
     create: (data) => {
         const {id, ...newData} = data;
 
@@ -78,6 +76,4 @@ api.projects = {
     }
 };
 
-api.notifications = new Endpoint(`/notifications`, {baseUrl: url});
-
-export default api;
+export default firestoreService;

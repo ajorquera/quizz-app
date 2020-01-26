@@ -5,7 +5,7 @@ import {
   useHistory
 } from "react-router-dom";
 
-import api from '../utils/api';
+import {firestoreService} from '../utils/services';
 import firebase from '../utils/firebase';
 import Project from '../utils/Project';
 
@@ -33,7 +33,7 @@ export default () => {
 
     const project = new Project({...data, timestamp});
 
-    api.projects.create(project.toJson())
+    firestoreService.projects.create(project.toJson())
       .then(() => {
         history.push('/dashboard/projects')
       })

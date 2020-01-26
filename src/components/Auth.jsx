@@ -49,15 +49,25 @@ export const ProtectedRoute = ({component, redirect, ...props}) => {
 export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setUser(user);
-      setIsAuth(true);
+
+      if(user) {
+        user.getIdToken(true).then(token => {
+          setAccessToken(token);
+          setIsAuth(true);
+        });
+      } else {
+        setIsAuth(true);
+      }
+
     });
 
     return unsubscribe;
   }, []);
 
-  return {user, isAuth};
+  return {user, isAuth, accessToken};
 };

@@ -22,7 +22,7 @@ export default (props) => {
     setAnchorEl(event.currentTarget);
   };
   return (
-    <Card style={styles.container}>
+    <Card style={{...styles.container, ...props.style}}>
       <CardContent>
         <IconButton size="small" onClick={handleClick} style={{position: 'absolute', right: 10}}>
           <MoreVert />
@@ -33,6 +33,7 @@ export default (props) => {
           onClose={handleClose}
         >
           <MenuItem onClick={props.onClickMenu.bind(null, 'sendSms', props.id)}>Enviar invitación</MenuItem>
+          <MenuItem onClick={props.onClickMenu.bind(null, 'showInfo', props.id)}>Mostrar información</MenuItem>
           <MenuItem onClick={props.onClickMenu.bind(null, 'delete', props.id)}>Borrar</MenuItem>
         </Menu>
         <div style={{textAlign: 'center'}}>

@@ -5,7 +5,7 @@ import firebase from 'utils/firebase';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
-import {firestoreService} from '../utils/services';
+import {authService} from '../utils/services';
 import { useSnackbar } from 'notistack';
 
 
@@ -107,13 +107,13 @@ export default (props) => {
     const goToDashboard = () => history.push('/dashboard');
 
     const loginUser = ({email, password}) => {
-        request(firestoreService.auth.login(email, password)).then(goToDashboard)
+        request(authService.login(email, password)).then(goToDashboard)
     };
 
     const registerUser = (data) => {
         const {email, password} = data;
 
-        const promise = firestoreService.auth.register(email, password).then(auth => {
+        const promise = authService.register(email, password).then(auth => {
             const user = auth.user;
 
             return firestore.collection('users').doc(user.uid).set({
@@ -131,7 +131,7 @@ export default (props) => {
     };
 
     const forgotPassword = ({email}) => {
-        request(firestoreService.auth.forgotPassword(email)).then(() => {
+        request(authService.forgotPassword(email)).then(() => {
             enqueueSnackbar('We have send an email to reset your password')
         });
     }
@@ -149,7 +149,7 @@ export default (props) => {
                     <img className={classes.logo} src="/logo.png" alt="logo" />
                     <Switch>
                         <Route path={`${path}/login`}>
-                            <Form buttonTitle="Login" links={loginLinks} formSchema={loginSchema} onSubmit={loginUser} loading={loading} />
+                            <Form buttonTitle="Login" formSchema={loginSchema} onSubmit={loginUser} loading={loading} />
                         </Route>
                         <Route path={`${path}/register`}>
                             <Form buttonTitle="Registar" links={[loginLink]} formSchema={registerSchema} onSubmit={registerUser} loading={loading} />                            

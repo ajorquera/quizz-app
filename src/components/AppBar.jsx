@@ -23,7 +23,7 @@ export default (props) => {
   const history = useHistory();
 
   return (
-    <AppBar style={styles.container}>
+    <AppBar position="static" style={styles.container}>
       <Toolbar>
         <img style={styles.logo} alt="Remy Sharp" src="/logo.png" />
         <h2 style={styles.title}>IPANEL.club</h2>
@@ -53,5 +53,5 @@ export default (props) => {
         </div>
                 </Toolbar>
     </AppBar>
-  )
+  );
 };

@@ -24,7 +24,7 @@ const projectSchema = [
 export default () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openProjectModal, setOpenProjectModal] = useState(false)
+  const [openProjectModal, setOpenProjectModal] = useState(false);
   const history = useHistory();
   const getProjects = () => {
     setLoading(true);
@@ -40,7 +40,7 @@ export default () => {
 
   const onSubmitProject = () => {
 
-  }
+  };
 
   return (
     <React.Fragment>
@@ -66,4 +66,4 @@ export default () => {
       </BaseDialog>
     </React.Fragment>
   );
-}
+};

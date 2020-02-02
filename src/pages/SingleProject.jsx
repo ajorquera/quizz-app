@@ -6,21 +6,30 @@ import UserDialog from '../components/UserDialog';
 import Grid from '@material-ui/core/Grid';
 import PanelistCard from '../components/PanelistCard';
 import NotificationDialog from '../components/NotificationDialog';
+import UserInfoDialog from '../components/UserInfoDialog';
+
+const styles = {
+  panelistCard: {
+    width: '200px'
+  }
+};
 
 export default () => {
   const match = useRouteMatch();
   const projectId = match.params.id;
-  const [project, setProject] = useState({})
-  const [isOpenModal, setisOpenModal] = useState(false)
-  const [panelist, setPanelist] = useState(null)
-  const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false)
+  const [project, setProject] = useState({});
+  const [isOpenModal, setisOpenModal] = useState(false);
+  const [panelist, setPanelist] = useState(null);
+  const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false);
+  const [isOpenUserModal, setIsOpenUserModal] = useState(false);
   
   const uuid = (prefix='') => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      // eslint-disable-next-line
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
       return prefix + v.toString(16);
     });
-  }
+  };
   
 
   const handleError = (error) => {
@@ -36,7 +45,7 @@ export default () => {
       .then(project => setProject(project))
       .catch(handleError);
      
-  }, [projectId])
+  }, [projectId]);
 
   useEffect(() => {
     getProject();
@@ -51,7 +60,7 @@ export default () => {
       })
       .catch(handleError)
       .finally();
-  }
+  };
   
 
   const deleteUser = (panelist) => {
@@ -61,9 +70,14 @@ export default () => {
   };
 
   const openInvitationDialog = (userInfo) => {
-    setPanelist({...userInfo, projectId: project.id})
+    setPanelist({...userInfo, projectId: project.id});
     setIsOpenNotificationModal(true);
-  }
+  };
+
+  const showUserInfo = (userInfo) => {
+    setPanelist({...userInfo, projectId: project.id});
+    setIsOpenUserModal(true);
+  };
 
   const onClickMenu = (type, panelist) => {
     switch(type) {
@@ -73,6 +87,10 @@ export default () => {
       
       case 'delete': 
         deleteUser(panelist);
+        break;
+
+      case 'showInfo': 
+        showUserInfo(panelist);
         break;
 
       default: 
@@ -85,8 +103,8 @@ export default () => {
       <h2>Panelistas</h2>
         <Grid container spacing={3}>
           {project.panel && project.panel.map((item, i) => (
-              <Grid item key={i} sm={6} xs={12} >
-                <PanelistCard name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
+              <Grid item key={i} >
+                <PanelistCard style={styles.panelistCard} name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
               </Grid>
           ))}
         </Grid>
@@ -94,6 +112,7 @@ export default () => {
       <Fab style={{float: 'right'}} onClick={() => toggleUserModal(true)} color="primary">+</Fab>
       <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />
       <NotificationDialog title="Enviar invitación" open={isOpenNotificationModal} onClose={() => setIsOpenNotificationModal(false)} data={panelist} />
+      <UserInfoDialog title="Información" open={isOpenUserModal} onClose={() => setIsOpenUserModal(false)} data={panelist} />
     </React.Fragment>
   );
 

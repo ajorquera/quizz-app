@@ -4,7 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 
 import MakeForm from '../components/MakeForm';
-import api from '../utils/services/firestore.service';
+import {authService} from '../utils/services';
 
 import AccessFormView from '../components/AccessFormView';
 import {useAuth} from '../components/Auth';
@@ -26,14 +26,14 @@ export default () => {
     const { enqueueSnackbar } = useSnackbar();
     let history = useHistory();
     let location = useLocation();
-    const {user} = useAuth();
+    const {firestoreUser} = useAuth();
 
     const queryParams = new URLSearchParams(location.search);
     const redirect = queryParams.get('redirect');
 
     const [loading, setLoading] = useState(false);
     const handleError = (error) => {
-        enqueueSnackbar(error.message)
+        enqueueSnackbar(error.message);
     };
 
     const request = (req) => {
@@ -43,28 +43,27 @@ export default () => {
         }).catch(handleError);
 
         return req;
-    }
+    };
 
     const loginUser = ({email, password}) => {
-        request(api.auth.login(email, password)).then((user) => {
+        request(authService.login(email, password)).then(() => {
             let userRedirect = DEFAULT_REDIRECT;
-            const {type} = user;
+            const {type} = firestoreUser;
 
             if(type === 'expert') {
                 userRedirect = '/project';
             } else if(type === 'staff') {
-                userRedirect = '/projects'
+                userRedirect = '/projects';
             } else if(type === 'company') {
-
             }
 
             history.push(redirect || userRedirect);
-        })
+        });
     };
 
     return (
         <AccessFormView title="Login" links={loginLinks}>
             <MakeForm buttonTitle="Login" links={loginLinks} schema={loginSchema} onSubmit={loginUser} loading={loading} />
         </AccessFormView>
-    )
+    );
 };

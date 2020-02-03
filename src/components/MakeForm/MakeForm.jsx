@@ -16,7 +16,7 @@ const styles = {
     margin: '15px auto',
     display: 'block'
   }
-}
+};
 
 const createSchema = (fields) => {
   let schema = yup.object({});
@@ -24,11 +24,11 @@ const createSchema = (fields) => {
   fields.forEach(field => {
     schema = schema.shape({
       [field.name]: field.validation || yup.any()
-    })
+    });
   });
 
   return schema;
-}
+};
 
 
 const MakeForm = (props)  => {
@@ -48,7 +48,7 @@ const MakeForm = (props)  => {
       defaultValue: field.value,
       label: field.label,
       disabled: field.disabled
-    }
+    };
     
     const textProps = {
       error: !!errorMessage,
@@ -83,7 +83,7 @@ const MakeForm = (props)  => {
             multiline 
             variant="outlined"
           />
-        )
+        );
         break;
 
       case 'radiogroup': 
@@ -119,13 +119,19 @@ const MakeForm = (props)  => {
     }
 
     return component;
-  }
+  };
 
+  const stopPropagation = (cb) => {
+    return (e) => {
+      e.stopPropagation();
+      cb(e);
+    };
+  };
   
-    const fields = props.schema
+    const fields = props.schema;
     const isSubmitDisabled = formState.isSubmitted && !formState.isValid;
     return (
-        <form onSubmit={handleSubmit(props.onSubmit)}>
+        <form onSubmit={stopPropagation(handleSubmit(props.onSubmit))}>
           {fields.map((field,i) => (
             <div key={i}>
               {renderField(field, i)}
@@ -144,7 +150,7 @@ const MakeForm = (props)  => {
 
             </Button>
         </form>
-    )
+    );
 };
 
 MakeForm.propTypes = {

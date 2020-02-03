@@ -3,6 +3,8 @@ import {useHistory} from "react-router-dom";
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
 import Card from '@material-ui/core/Card';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import CardContent from '@material-ui/core/CardContent';
 import { Grid } from '@material-ui/core';
 import * as yup from 'yup';
@@ -57,6 +59,10 @@ export default () => {
               </Card>
             </Grid>
           ))}
+
+          {loading && (
+            <CircularProgress />
+          )}
         </Grid>
       </Container>
       <Fab style={{float: 'right'}} color="primary" onClick={() => setOpenProjectModal(true)}>+</Fab>

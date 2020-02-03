@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useAuth} from '../components/Auth';
 import ImgInput from '../components/ImgInput';
 import {storageService, firestoreService} from '../utils/services';
-import { Grid, Container } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 
 const styles = {

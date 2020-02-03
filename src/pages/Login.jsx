@@ -4,10 +4,9 @@ import { useHistory, useLocation } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 
 import MakeForm from '../components/MakeForm';
-import {authService} from '../utils/services';
+import {authService, firestoreService} from '../utils/services';
 
 import AccessFormView from '../components/AccessFormView';
-import {useAuth} from '../components/Auth';
 
 const loginSchema = [
     {name: 'email', label: 'Email', type: 'text', validation: yup.string().email().required()},
@@ -26,7 +25,6 @@ export default () => {
     const { enqueueSnackbar } = useSnackbar();
     let history = useHistory();
     let location = useLocation();
-    const {firestoreUser} = useAuth();
 
     const queryParams = new URLSearchParams(location.search);
     const redirect = queryParams.get('redirect');
@@ -46,10 +44,9 @@ export default () => {
     };
 
     const loginUser = ({email, password}) => {
-        request(authService.login(email, password)).then(() => {
+        request(authService.login(email, password)).then(({user}) => firestoreService.users.get(user.uid)).then((user) => {
             let userRedirect = DEFAULT_REDIRECT;
-            const {type} = firestoreUser;
-
+            const {type} = user;
             if(type === 'expert') {
                 userRedirect = '/project';
             } else if(type === 'staff') {

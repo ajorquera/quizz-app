@@ -50,13 +50,13 @@ export default (props) => {
 
     schema.forEach(field => {
       if(data[field.name]) {
-        field.value = data[field.name]
+        field.value = data[field.name];
       }
     });
   }, [props.data, schema]);
 
   return (
-    <Dialog fullWidth maxWidth="sm" style={styles.container} open={props.open} onClose={props.onClose}>
+    <Dialog fullWidth maxWidth="sm" style={styles.container} {...props}>
       <DialogContent>
         <DialogTitle >
           {props.title}
@@ -66,7 +66,7 @@ export default (props) => {
           
         </DialogTitle>
         <DialogContent dividers>
-          <MakeForm buttonTitle="Enviar" schema={schema} onSubmit={() => props.onSubmit} loading={props.loading} />                            
+          <MakeForm buttonTitle="Enviar" schema={schema} onSubmit={props.onSubmit} loading={props.loading} />                            
         </DialogContent>
       </DialogContent>
     </Dialog>

@@ -22,7 +22,7 @@ module.exports = async (req, res, next) => {
 
     const {error} = paramsSchema.validate(params);
 
-    if(error) return next({code: 'VALIDATION_ERROR', error});
+    if(error) return next({code: 'VALIDATION_ERROR', data: error});
 
     let to = '+34';
     if(type === TYPES.SMS) {
@@ -38,7 +38,7 @@ module.exports = async (req, res, next) => {
             from: FROM
         });
     } catch(e) {
-        return next({code: 'TWILIO_ERROR', error: e});
+        return next({code: 'TWILIO_ERROR', data: e});
     }
 
     return res.status(204).end();

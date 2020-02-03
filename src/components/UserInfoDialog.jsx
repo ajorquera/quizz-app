@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Grid} from '@material-ui/core';
 import BaseDialog from './BaseDialog';
 import {firestoreService} from '../utils/services';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = {
   photoContainer: {
@@ -37,6 +38,9 @@ export default (props) => {
             <img style={styles.img} src={photo.url} alt="user-pic" />
           </Grid>
         ))}
+        {loading && (
+          <CircularProgress />
+        )}
       </Grid>
     </BaseDialog>
   );

@@ -17,5 +17,5 @@ module.exports = async (req, res, next) => {
 
 	req.firebaseUser = user;
 
-	next();
+	return next();
 };

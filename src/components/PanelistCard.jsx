@@ -6,7 +6,7 @@ const styles = {
   container: {
     position: 'relative'
   }
-}
+};
 
 export default (props) => {
 
@@ -21,6 +21,8 @@ export default (props) => {
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
+
+  
   return (
     <Card style={{...styles.container, ...props.style}}>
       <CardContent>
@@ -42,8 +44,8 @@ export default (props) => {
         <h2>{name}</h2>
         <Chip
           size="small"
-          color="primary"
-          label="Progress..."
+          label={props.accepted ? 'Invitacion aceptada':'Pendiente'}
+          color={props.accepted ? 'primary':'secondary'}
         />
       </CardContent>
     </Card>

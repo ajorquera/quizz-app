@@ -59,7 +59,7 @@ Endpoint.getUrl = ({id, path, baseUrl=''}) => {
   }
 
   return url;
-}
+};
 
 Endpoint.handleError = (error) => {
   console.error(error);
@@ -70,7 +70,7 @@ Endpoint.handleRequest = async (res)=> {
   let data;
   const status = res.status;
 
-  if(status === 200 || res.headers['Content-Type'] === 'application/json') {
+  if([204].indexOf(status) === -1 || res.headers['Content-Type'] === 'application/json') {
     data = await res.json();
   }
 

@@ -35,7 +35,7 @@ export default (props) => {
           onClose={handleClose}
         >
           <MenuItem onClick={props.onClickMenu.bind(null, 'sendSms', props.id)}>Enviar invitación</MenuItem>
-          <MenuItem onClick={props.onClickMenu.bind(null, 'showInfo', props.id)}>Mostrar información</MenuItem>
+          {props.accepted && <MenuItem onClick={props.onClickMenu.bind(null, 'showInfo', props.id)}>Mostrar información</MenuItem>}
           <MenuItem onClick={props.onClickMenu.bind(null, 'delete', props.id)}>Borrar</MenuItem>
         </Menu>
         <div style={{textAlign: 'center'}}>

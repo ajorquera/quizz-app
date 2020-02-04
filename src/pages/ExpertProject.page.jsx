@@ -1,8 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import Assignment from '@material-ui/icons/Assignment';
+import MoodBad from '@material-ui/icons/MoodBad';
+
 import {useAuth} from '../components/Auth';
 import ImgInput from '../components/ImgInput';
 import {storageService, firestoreService} from '../utils/services';
-import { Grid } from '@material-ui/core';
+import { Grid, CircularProgress } from '@material-ui/core';
 
 
 const styles = {
@@ -25,7 +28,6 @@ export default (props) => {
 
   useEffect(() => {
     if(firestoreUser) {
-      console.log(firestoreUser);
       
       setLoading(false);
       if(firestoreUser.photos) setPhotos(firestoreUser.photos);
@@ -47,27 +49,42 @@ export default (props) => {
   const createPhoto = (path) => {
     return {
       timestamp: Date.now(),
-      url: `https://storage.googleapis.com/${storageService.getBucket()}/${path}`
+      url: storageService.getFileUrl(path)
     };
   };
+  
+  const project = firestoreUser && firestoreUser.project;
 
   return (
     <div style={styles.container}>
-      {!loading && (
-        <div>
-          <h1>
-            <span style={{marginRight: '10px'}}>{firestoreUser.project.name}</span>
-            <ImgInput onChange={uploadFile} />
-          </h1>
-          <Grid container justify="center" spacing={4}>
-            {photos.map((photo, i) => (
-              <Grid style={styles.photoContainer} item key={i}>
-                <img style={styles.image} src={photo.url} alt="ohoto" />
-              </Grid>
-            ))}
-          </Grid>
+        {project && (
+          <React.Fragment>
+            <h1>
+              <span style={{marginRight: '10px'}}>{project.name}</span>
+              <ImgInput onChange={uploadFile} />
+            </h1>
+            <Grid container justify="center" spacing={4}>
+              {photos.reverse().map((photo, i) => (
+                <Grid style={styles.photoContainer} item key={i}>
+                  <img style={styles.image} src={photo.url} alt="ohoto" />
+                </Grid>
+              ))}
+            </Grid>
+          </React.Fragment>
+        )}
+        <div style={{textAlign: 'center', marginTop: '40px'}}>
+          {loading && (
+            <CircularProgress />
+          )}
+          {!loading && !project && (
+            <div style={{textAlign: 'center', opacity: 0.7}}>
+              <h3><Assignment style={{fontSize: '64px'}} /></h3>
+              <p>Parece que todavia no tienes ningun proyecto &nbsp;</p>
+              <MoodBad />
+            </div>
+          )}
+
         </div>
-      )}
     </div>
   );
 };

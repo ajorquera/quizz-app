@@ -18,6 +18,7 @@ import Projects from "./pages/Projects";
 import PickUser from "./pages/PickUser.page";
 import Invitation from "./pages/Invitation.page";
 import ExpertProject from "./pages/ExpertProject.page";
+import Logout from "./pages/Logout";
 
 const createDashboardView = (Component) => () => (<DashboardView><Component /></DashboardView>)
 const createAccessView = (Component) => () => (<AccessView><Component /></AccessView>)
@@ -31,6 +32,7 @@ export default () => {
         <Route path="/projects" redirect="/login" component={createDashboardView(Projects)} />
         <Route path="/project" redirect="/login" component={createDashboardView(ExpertProject)} />
         <Route path="/invitation/:projectId" redirect="/login" component={createAccessView(Invitation)} />
+        <Route path="/logout" component={Logout} />
           
         <Route path="/login" component={createAccessView(Login)} />
         <Route path="/register">

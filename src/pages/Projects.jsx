@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CardContent from '@material-ui/core/CardContent';
 import { Grid } from '@material-ui/core';
 import * as yup from 'yup';
+import {useSnackbar} from 'notistack';
 
 import api from '../utils/services/firestore.service';
 import BaseDialog from '../components/BaseDialog';
@@ -24,6 +25,7 @@ const projectSchema = [
 ];
 
 export default () => {
+  const {enqueueSnackbar} = useSnackbar();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openProjectModal, setOpenProjectModal] = useState(false);
@@ -33,7 +35,14 @@ export default () => {
 
     return api.projects.get().then(projects => {
         setProjects(projects);
-    }).finally(() => setLoading(false));
+    })
+    .catch((error) => {
+      enqueueSnackbar(error.message);
+      setTimeout(() => {
+        history.push('/logout');
+      }, 1000);
+    })
+    .finally(() => setLoading(false));
   };
 
   useEffect(() => {

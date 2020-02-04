@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles({
   Access: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles({
 
 export default (props) => {
   const classes = useStyles();
+  const history = useHistory();
     return (
       <React.Fragment>
         <div className={classes.backgroundTop}></div>
@@ -38,7 +40,7 @@ export default (props) => {
                 justify="center"
             >
                 <Grid xs={12} sm={8} md={4} item >
-                    <img className={classes.logo} src="/logo.png" alt="logo" />
+                    <img className={classes.logo} src="/logo.png" alt="logo" onClick={() => history.push('/')} />
                     {props.children}
                 </Grid>
             </Grid>

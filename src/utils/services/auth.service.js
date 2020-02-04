@@ -7,5 +7,6 @@ export default {
   login: (email, password) => auth.signInWithEmailAndPassword(email, password),
   loginWithGoogle: () => auth.signInWithPopup(googleProvider),
   register: (email, password) => auth.createUserWithEmailAndPassword(email, password),
-  forgotPassword: email => auth.sendPasswordResetEmail(email)
+  forgotPassword: email => auth.sendPasswordResetEmail(email),
+  logout: () => auth.signOut()
 };

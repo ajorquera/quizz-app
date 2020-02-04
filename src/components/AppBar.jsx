@@ -25,7 +25,7 @@ export default (props) => {
   return (
     <AppBar position="static" style={styles.container}>
       <Toolbar>
-        <img style={styles.logo} alt="Remy Sharp" src="/logo.png" />
+        <img style={styles.logo} alt="Remy Sharp" src="/logo.png" onClick={() => history.push('/')} />
         <h2 style={styles.title}>IPANEL.club</h2>
         <div className={styles.sectionDesktop}>
           <IconButton aria-label="show 17 new notifications" color="inherit">
@@ -48,7 +48,7 @@ export default (props) => {
             open={isMenuOpen}
             onClose={() => setIsMenuOpen(false)}
           >
-            <MenuItem onClick={() => history.push('/login')}>Logout</MenuItem>
+            <MenuItem onClick={() => history.push('/logout')}>Logout</MenuItem>
           </Menu>
         </div>
                 </Toolbar>

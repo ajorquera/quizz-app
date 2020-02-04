@@ -1,14 +1,11 @@
 import * as yup from 'yup';
 import React, {useState} from 'react';
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { useSnackbar } from 'notistack';
-import firebase from 'utils/firebase';
 
-import api from '../utils/services/firestore.service';
+import {authService, firestoreService} from '../utils/services';
 import AccessFormView from '../components/AccessFormView';
 import MakeForm from '../components/MakeForm/MakeForm';
-
-const firestore = firebase.firestore();
 
 const registerCompanySchema = [
     {name: 'companyName', label: 'Nombre de Empresa', type: 'text', validation: yup.string().required()},
@@ -31,29 +28,31 @@ const registerExpertSchema = [
 export default () => {
     const { enqueueSnackbar } = useSnackbar();
     let history = useHistory();
+    let location = useLocation();
     let params = useParams();
-    const isExpert = params.typeUser === 'expert'
+    const isExpert = params.typeUser === 'expert';
+
+    const queryParams = new URLSearchParams(location.search); 
+    const redirect = queryParams.get('redirect');
     
     const [loading, setLoading] = useState(false);
     const handleError = (error) => {
-        enqueueSnackbar(error.message)
-    }
+        enqueueSnackbar(error.message);
+    };
 
     const registerUser = (data) => {
         
         const {email, password, ...rest} = data;
 
-        const promise = api.auth.register(email, password).then(auth => {
-            const user = auth.user;
-
-            return firestore.collection('users').doc(user.uid).set({
+        const promise = authService.register(email, password).then(auth => {
+            return firestoreService.createMe({
                 ...rest,
                 type: isExpert ? 'expert' : 'company'            
-            })
+            });
         });
 
         request(promise).then(() => {
-            history.push('/access/login');
+            history.push(redirect || '/login');
         });
     };
 
@@ -64,9 +63,9 @@ export default () => {
         }).catch(handleError);
 
         return req;
-    }
+    };
 
-    const title = isExpert ? 'Registrar Experto' : 'Registrar Compañia'
+    const title = isExpert ? 'Registrar Experto' : 'Registrar Compañia';
     return (
         <AccessFormView back title={title}>
             <MakeForm 
@@ -76,5 +75,5 @@ export default () => {
                 loading={loading} 
             />                            
         </AccessFormView>
-    )
+    );
 };

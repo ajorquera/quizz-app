@@ -15,12 +15,10 @@ const extractFirestoreData = async function extractFirestoreData(docRef) {
 firestoreService.users = {
     createPanelist: async (data) => {
         let project = await firestoreService.projects.get(data.projectId);
+        const panel = project.panel || [];
+        panel.push({...data});
 
-        project.panel.push({...data});
-
-        await firestore.collection('projects').doc(data.projectId).update({
-            panel: project.panel
-        });
+        await firestore.collection('projects').doc(data.projectId).update({panel});
 
         return project.panel;
     },
@@ -37,7 +35,7 @@ firestoreService.users = {
     },
     get: (id) => {
         return firestore.collection('users').doc(id).get().then(extractFirestoreData);
-    }
+    },
 };
 
 firestoreService.projects = {
@@ -67,6 +65,12 @@ firestoreService.projects = {
 firestoreService.serverTimestamp = firebase.firestore.FieldValue.serverTimestamp;
 firestoreService.updateMe = (data) => {
     return firestore.collection('users').doc(auth.currentUser.uid).update(data);
+};
+
+
+firestoreService.createMe = (data) => {
+    const auth = firebase.auth();
+    return firestore.collection('users').doc(auth.currentUser.uid).set(data);
 };
 
 

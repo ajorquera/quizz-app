@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {useHistory} from 'react-router-dom';
+import {useHistory,useLocation} from 'react-router-dom';
 import Link from './Link';
 import Paper from '@material-ui/core/Paper';
 import { Button } from '@material-ui/core';
@@ -15,13 +15,14 @@ const styles = {
   links: {
     textAlign: 'center'
   }
-}
+};
 
 const AccessFormView = (props) => {
+  const location = useLocation();
   const history = useHistory();
   const goBack = () => {
     history.goBack();
-  }
+  };
 
   return (
     <Paper style={{...styles.container , ...props.style}}>
@@ -32,11 +33,11 @@ const AccessFormView = (props) => {
       {props.children}
       {props.links.map((link, i) => (
         <div key={i} style={styles.links}>
-            <Link to={link.to}>{link.label}</Link>
+            <Link to={{pathname: link.to, search: location.search}}>{link.label}</Link>
         </div>
       ))}
     </Paper>
-  )
+  );
 };
 
 AccessFormView.propTypes = {

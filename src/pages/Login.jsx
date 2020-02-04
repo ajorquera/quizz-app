@@ -16,7 +16,6 @@ const loginSchema = [
 const loginLinks = [
     {to: '/register', label:"Registro"},
     {to: '/forgot-password', label:"Olvide mi contraseña"},
-    {to: '/projects', label:"Proyectos"},
 ];
 
 const DEFAULT_REDIRECT = '/dashboard';

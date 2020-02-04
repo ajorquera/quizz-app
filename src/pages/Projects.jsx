@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {useHistory} from "react-router-dom";
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
@@ -10,7 +10,7 @@ import { Grid } from '@material-ui/core';
 import * as yup from 'yup';
 import {useSnackbar} from 'notistack';
 
-import api from '../utils/services/firestore.service';
+import {firestoreService} from '../utils/services';
 import BaseDialog from '../components/BaseDialog';
 import MakeForm from '../components/MakeForm/MakeForm';
 
@@ -30,10 +30,11 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [openProjectModal, setOpenProjectModal] = useState(false);
   const history = useHistory();
-  const getProjects = () => {
+  
+  const getProjects = useCallback(() => {
     setLoading(true);
 
-    return api.projects.get().then(projects => {
+    return firestoreService.projects.get().then(projects => {
         setProjects(projects);
     })
     .catch((error) => {
@@ -43,24 +44,27 @@ export default () => {
       }, 1000);
     })
     .finally(() => setLoading(false));
-  };
+  }, [history, enqueueSnackbar]);
 
   useEffect(() => {
     getProjects();
-  }, []);
+  }, [getProjects]);
 
-  const onSubmitProject = () => {
+  const onSubmitProject = (data) => {
+    firestoreService.projects.create(data).then(() => {
+      getProjects();
+      setOpenProjectModal(false);
 
+    });
   };
 
   return (
     <React.Fragment>
       <h1 style={{textAlign: 'center'}}>Projects</h1>
-      <Container style={{border: '1px solid black', paddingTop: '10px', paddingBottom: '10px'}}>
         <Grid container spacing={3}>
           {projects.map((project, i) => (
             <Grid key={i} item>
-              <Card onClick={() => history.push(`/projects/${project.id}`)}>
+              <Card style={{cursor: 'pointer'}} onClick={() => history.push(`/projects/${project.id}`)}>
                 <CardContent>
                   <h1>{project.name}</h1>
                   <p>{project.requirements}</p>
@@ -73,7 +77,6 @@ export default () => {
             <CircularProgress />
           )}
         </Grid>
-      </Container>
       <Fab style={{float: 'right'}} color="primary" onClick={() => setOpenProjectModal(true)}>+</Fab>
 
       <BaseDialog open={openProjectModal} title="Proyecto" onClose={() => setOpenProjectModal(false)}>

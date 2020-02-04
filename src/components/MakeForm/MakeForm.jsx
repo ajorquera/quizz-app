@@ -14,7 +14,7 @@ const styles = {
   },
   submitButton: {
     margin: '15px auto',
-    display: 'block'
+    display: 'flex'
   }
 };
 
@@ -146,7 +146,12 @@ const MakeForm = (props)  => {
             variant="contained" 
             style={styles.submitButton} 
           >
-              {props.loading ? <CircularProgress size={24} color="inherit" /> : props.buttonTitle}
+              {props.loading && (
+                <CircularProgress size={24} color="inherit" /> 
+              )}
+              {!props.loading && (
+                props.buttonTitle
+              )}
 
             </Button>
         </form>

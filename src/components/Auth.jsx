@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
-import {Route, Redirect} from 'react-router-dom'
-import firebase from '../utils/firebase'
+import React, {useState, useEffect} from 'react';
+import {Route, Redirect} from 'react-router-dom';
+import firebase from '../utils/firebase';
 
 const auth = firebase.auth();
 const firestore = firebase.firestore();
@@ -22,7 +22,7 @@ export const createGuardRoute = redirect => Component => {
   }
 
   return Guard;
-}
+};
 
 export const ProtectedRoute = ({component, redirect, ...props}) => {
   const {isAuth, user} = useAuth();
@@ -36,20 +36,20 @@ export const ProtectedRoute = ({component, redirect, ...props}) => {
           return (<Redirect to={{
             pathname: redirect,
             search: `?redirect=${match.url}`
-          }} />)
+          }} />);
         } else if(isAuth) {
           return (
             <Component {...props} />
-          )
+          );
         }
       }}
     />
   );
-}
+};
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
-  const [firestoreUser, setFirestoreUser] = useState(null)
+  const [firestoreUser, setFirestoreUser] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
 
@@ -64,10 +64,10 @@ export const useAuth = () => {
             const firestoreUser = {
               id: user.uid,
               ...dataSnap.data()
-            }
-            setFirestoreUser(firestoreUser)
+            };
+            setFirestoreUser(firestoreUser);
             setIsAuth(true);
-          })
+          });
         });
       } else {
         setIsAuth(true);

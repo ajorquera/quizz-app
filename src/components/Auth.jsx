@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import firebase from '../utils/firebase';
 
+
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 
@@ -72,11 +73,17 @@ export const useAuth = () => {
       } else {
         setIsAuth(true);
       }
-
     });
 
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if(firestoreUser && firestoreUser.type === 'expert') {
+      // eslint-disable-next-line
+      import('../thirdParty/tawkto');
+    }
+  }, [firestoreUser]);
 
   return {user, isAuth, accessToken, firestoreUser};
 };

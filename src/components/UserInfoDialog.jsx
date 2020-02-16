@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Grid} from '@material-ui/core';
-import BaseDialog from './BaseDialog';
+import BaseDialog from './dialogs/BaseDialog';
 import {firestoreService} from '../utils/services';
 import CircularProgress from '@material-ui/core/CircularProgress';
 

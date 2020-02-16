@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import * as yup from 'yup';
 import { TextField, RadioGroup, FormControlLabel, Radio, CircularProgress, FormControl, Checkbox, FormHelperText } from '@material-ui/core';
 import { useForm, Controller } from "react-hook-form";
+import CheckboxGroup from '../CheckboxGroup';
 
 const styles = {
   text: {
@@ -23,7 +24,7 @@ const createSchema = (fields) => {
 
   fields.forEach(field => {
     schema = schema.shape({
-      [field.name]: field.validation || yup.any()
+      [field.name]: field.validation || yup.mixed()
     });
   });
 
@@ -89,7 +90,7 @@ const MakeForm = (props)  => {
       case 'radiogroup': 
         component = (
           <RadioGroup row key={index}>
-            {field.items.map((item, i) => (
+            {field.options.map((item, i) => (
               <FormControlLabel
                 key={i}
                 control={<Controller defaultValue={field.value} {...commonProps} as={Radio} control={control} disabled={item.disabled} checked={item.value === field.value} color="primary" />}
@@ -102,7 +103,7 @@ const MakeForm = (props)  => {
         );
         break;
 
-      case 'checkbox': 
+        case 'checkbox': 
         component = (
           <FormControl>
             <FormControlLabel
@@ -111,6 +112,12 @@ const MakeForm = (props)  => {
             />
             <FormHelperText error>{errorMessage}</FormHelperText>
         </FormControl>
+        );
+        break;
+
+      case 'checkboxgroup': 
+        component = (
+          <CheckboxGroup options={field.options} {...commonProps} />
         );
         break;
 

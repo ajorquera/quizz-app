@@ -11,6 +11,8 @@ import NotificationDialog from '../components/NotificationDialog';
 import UserInfoDialog from '../components/UserInfoDialog';
 import {useAuth} from '../components/Auth';
 import { useSnackbar } from 'notistack';
+import TodoCard from '../components/TodoCard';
+import NewTodoDialog from '../components/dialogs/NewTodoDialog';
 
 const styles = {
   panelistCard: {
@@ -33,6 +35,7 @@ export default () => {
   const [loading, setLoading] = useState(false);
   const [panelist, setPanelist] = useState(null);
   const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false);
+  const [isOpenNewTodoDialog, setIsOpenNewTodoDialog] = useState(false);
   const [isOpenUserModal, setIsOpenUserModal] = useState(false);
   const {accessToken} = useAuth();
 
@@ -130,14 +133,30 @@ export default () => {
     });
   };
 
+  const onNewTask = async (task) => {
+    setIsOpenNewTodoDialog(false);
+
+    await firestoreService.projects.addTask(project.id, task);
+    getProject();
+  };
+
+  const deleteTask = async (task) => {
+    await firestoreService.projects.deleteTask(project.id, task.id);
+    getProject();
+  };
+
   return (
     <React.Fragment>
       <br />
       <Button onClick={goBack}>
         &lt; Atrás
       </Button>
-      <h1>{project.name}</h1>
-      <h2>Panelistas</h2>
+      <h1>
+        {project.name}
+        <Fab style={{float: 'right'}} onClick={() => toggleUserModal(true)} color="primary">+</Fab>
+      </h1>
+      <div>
+        <h2>Panelistas</h2>
         <Grid container spacing={3}>
           {project.panel && project.panel.map((item, i) => (
               <Grid item key={i} >
@@ -148,11 +167,34 @@ export default () => {
             <CircularProgress />
           )}
         </Grid>
+      </div>
+      <div>
+        <h2>
+          Tareas
+          <Fab style={{float: 'right'}} onClick={() => setIsOpenNewTodoDialog(true)} color="secondary">+</Fab>
+        </h2>
+        <Grid container spacing={3}>
+          {project.tasks && project.tasks.map((task, i) => (
+            <Grid item key={i} >
+              <TodoCard 
+                title={task.name} 
+                description={task.description} 
+                key={i} 
+                todos={task.todos} 
+                onClose={() => deleteTask(task)}
+              />
+            </Grid>
+          ))}
+          {loading && (
+            <CircularProgress />
+          )}
+        </Grid>
+      </div>
 
-      <Fab style={{float: 'right'}} onClick={() => toggleUserModal(true)} color="primary">+</Fab>
       <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />
       <NotificationDialog title="Enviar invitación" onSubmit={sendNotification} open={isOpenNotificationModal} onClose={() => setIsOpenNotificationModal(false)} data={panelist} />
       <UserInfoDialog title="Información" open={isOpenUserModal} onClose={() => setIsOpenUserModal(false)} data={panelist} />
+      <NewTodoDialog onSubmit={onNewTask} title="Tarea" open={isOpenNewTodoDialog} onClose={() => setIsOpenNewTodoDialog(false)} />
     </React.Fragment>
   );
 

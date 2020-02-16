@@ -10,7 +10,7 @@ import * as yup from 'yup';
 import {useSnackbar} from 'notistack';
 
 import {firestoreService} from '../utils/services';
-import BaseDialog from '../components/BaseDialog';
+import BaseDialog from '../components/dialogs/BaseDialog';
 import MakeForm from '../components/MakeForm/MakeForm';
 
 const projectSchema = [

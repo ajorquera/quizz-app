@@ -14,7 +14,7 @@ import { IconButton } from '@material-ui/core';
 const compiledMessage = template('Hola, queremos invitarte a que formes parte de nuestro grupo de panelistas. Solo tienes que hacer click en este link: ${domain}/invitation/${projectId}')
 const DOMAIN = process.env.REACT_APP_FIREBASE_HOSTING_DOMAIN;
 const notificationSchema = [
-  {name: 'typeNotification', value: 'sms' , label: 'Notificación', type: 'radiogroup', items: [
+  {name: 'typeNotification', value: 'sms' , label: 'Notificación', type: 'radiogroup', options: [
     {label: 'Email', value: 'email', disabled: true},
     {label: 'SMS', value: 'sms'},
     {label: 'WhatsApp', value: 'whatsapp', disabled: true},

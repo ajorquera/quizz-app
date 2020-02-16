@@ -35,7 +35,8 @@ module.exports = async (req, res, next) => {
   await userSnap.ref.set({
     project: {
       name: projectData.name,
-      id: body.projectId
+      id: body.projectId,
+      tasks: projectData.tasks
     }
   }, {merge: true});
 

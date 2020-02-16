@@ -4,26 +4,22 @@ import {extractFirestoreData} from './helpers';
 
 const firestore = firebase.firestore();
 
-
 export default {
-  createPanelist: async (data) => {
-    let project = await projects.get(data.projectId);
-    const panel = project.panel || [];
-    panel.push({...data});
-
-    await firestore.collection('projects').doc(data.projectId).update({panel});
-
+  createPanelist: async (projectId, data) => {
+    let project = await projects.get(projectId);
+    project.newPanelist(data);
+    const panel = project.toJson().panel;
+    
+    await firestore.collection('projects').doc(project.id).update({panel});
     return project.panel;
 },
-deletePanelist: async (panelist) => {
-    const {projectId, id} = panelist;
-    let project = await projects.get(projectId);
+deletePanelist: async (id, panelist) => {
+    let project = await projects.get(id);
+    const isDeleted = project.deletePanelist(panelist);
     const panel = project.panel;
-    const panelistIndex = panel.findIndex(item => item.id === id);
 
-    if(panelistIndex >= 0) {
-        panel.splice(panelistIndex , 1);
-        await firestore.collection('projects').doc(projectId).update({panel});
+    if(isDeleted) {
+        await firestore.collection('projects').doc(project.id).update({panel});
     }
 },
 get: (id) => {

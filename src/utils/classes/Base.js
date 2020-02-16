@@ -5,20 +5,22 @@ export default class Base {
     this.schema = Base.schema.concat(schema);
 
     const id = Base.generateId();
-    const dateTime = (new Date()).toISOString();
+    const dateTime = Base.now();
 
-    const props = {id, dateTime, ...rest};
-
-    this.schema.validateSync(props);
+    const props = this.schema.validateSync({id, dateTime, ...rest});
 
     Object.keys(props).forEach(key => {
       this[key] = props[key];
     });
   }
 
-  toJson() {
+  toJSON() {
     const {schema, ...props} = this;
     return JSON.parse(JSON.stringify(props));
+  }
+
+  toJson() {
+    return this.toJSON();
   }
 
   static schema = yup.object().shape({
@@ -34,5 +36,9 @@ export default class Base {
       const v = c === 'x' ? r : (r & 0x3 | 0x8);
       return prefix + v.toString(16);
     });
+  }
+
+  static now() {
+    return (new Date()).toISOString();
   }
 };

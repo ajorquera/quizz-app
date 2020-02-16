@@ -1,49 +1,71 @@
-import * as yup from 'yup';
+import {number, string, object, array} from 'yup';
+import Base from './Base';
+import Task from './Task';
+import Panelist from './Panelist';
 
+const required = string().required();
 
-export default class Project {
-  constructor(opts) {
-    try {
-      Project.propSchema.validateSync(opts);
-    } catch(error) {
-      console.log(error);
+const instanceOf = (Obj) => {
+  return object().test((value) => {
+    return Obj.schema.isValidSync(value);
+  });
+};
+
+export default class Project extends Base {
+  constructor(props) {
+    let tasks = props.tasks || [];
+    let panel = props.panel || [];
+    
+    tasks = tasks.map(task => new Task(task));
+    panel = panel.map(panelist => new Panelist(panelist));
+
+    super({...props, schema: Project.schema}, tasks, panel);
+  };
+
+  newPanelist(data) {
+    return this._add('panel', Panelist, data);
+  }
+
+  newTask(data) {
+    return this._add('tasks', Task, data);
+  }
+
+  deleteTask(id) {
+    return this._delete('tasks', id);
+  }
+
+  deletePanelist(id) {
+    return this._delete('panel', id);
+  }
+
+  _add(name, Obj, data) {
+    const instance = new Obj(data);
+    this[name].push(instance);
+  }
+
+  _delete(name, id) {
+    let found = false;
+    
+    const idStr = typeof id === 'object' ? id.id : id;
+    const index = this[name].findIndex(item => item.id === idStr);
+    found = index >= 0;
+
+    if(found) {
+      this[name].splice(index, 1);
     }
 
-    Project.copyToObject(this, opts, this._getNameProps());
-
-    if(!Array.isArray(this.panel)) {
-      this.panel = [];
-    } 
+    return found;
   }
 
-  toJson() {
-    const json = Project.copyToObject({}, this, this._getNameProps());
-    return json;
-  }
-
-  _getNameProps() {
-    return Object.keys(Project.propSchema.describe().fields);
-  }
-};
-
-Project.copyToObject = (copy, obj, props) => {
-
-  props.forEach(prop => {
-    copy[prop] = obj[prop];
+  static schema = object().shape({
+    name: required,
+    companyName: required,
+    contactName: required,
+    contactEmail: required,
+    contactPhone: required,
+    requirements: required,
+    numberParticipants: number().min(1).required(),
+    panel: array().of(instanceOf(Panelist)).default([]),
+    tasks: array().of(instanceOf(Task)).default([]),
   });
-
-  return copy;
 };
-
-Project.propSchema = yup.object().shape({
-  id: yup.string(),
-  name: yup.string().required(),
-  companyName: yup.string().required(),
-  contactName: yup.string().required(),
-  contactEmail: yup.string().required(),
-  contactPhone: yup.string().required(),
-  requirements: yup.string().required(),
-  timestamp: yup.string().required(),
-  panel: yup.array().default([]),
-  numberParticipants: yup.number().min(1).required()
-});

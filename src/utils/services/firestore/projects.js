@@ -7,15 +7,18 @@ import Task from '../../classes/Task';
 const firestore = firebase.firestore();
 
 export default {
-  create: (data) => {
-    const {id, ...newData} = data;
-
-    return firestore.collection('projects').add(newData);
+    create: (data) => {
+        const {id, ...newProject} = (new Project(data)).toJSON();
+        return firestore.collection('projects').add(newProject).then(ref => {
+            newProject.id = ref.id;
+        });
     },
     
     get: async (id) => {
         if(id) {
-            return firestore.collection('projects').doc(id).get().then(extractFirestoreData);
+            return firestore.collection('projects').doc(id).get()
+                .then(extractFirestoreData)
+                .then(project => new Project(project));
         } else {
             return firestore.collection('projects').get().then(querySnap => {
                 const projects = [];
@@ -35,7 +38,7 @@ export default {
 
         project.tasks = project.tasks || [];
 
-        const data = newTask.toJson();
+        const data = newTask.toJSON();
         project.tasks.push(data);
 
         await firestore.collection('projects').doc(projectId).update(project);
@@ -48,7 +51,7 @@ export default {
 
         if(index >= 0) {
             project.tasks.splice(index, 1);
-            await firestore.collection('projects').doc(projectId).update(project);
+            await firestore.collection('projects').doc(projectId).update({tasks: project.tasks});
         }
     }
 };

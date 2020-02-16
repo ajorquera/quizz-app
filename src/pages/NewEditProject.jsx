@@ -33,9 +33,9 @@ export default () => {
 
     const project = new Project({...data, timestamp});
 
-    firestoreService.projects.create(project.toJson())
+    firestoreService.projects.create(project.toJSON())
       .then(() => {
-        history.push('/dashboard/projects')
+        history.push('/dashboard/projects');
       })
       .catch(handleError)
       .finally(() => setLoading(false));  

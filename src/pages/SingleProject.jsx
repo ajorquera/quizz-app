@@ -39,14 +39,6 @@ export default () => {
   const [isOpenUserModal, setIsOpenUserModal] = useState(false);
   const {accessToken} = useAuth();
 
-  const uuid = (prefix='') => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      // eslint-disable-next-line
-      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return prefix + v.toString(16);
-    });
-  };
-  
 
   const handleError = (error) => {
     console.log(error);
@@ -70,8 +62,7 @@ export default () => {
   }, [getProject]);
 
   const onSubmit = (data) => {
-    const id = uuid();
-    firestoreService.users.createPanelist({projectId: project.id, ...data, id})
+    firestoreService.users.createPanelist(project.id, data)
       .then(() => {
         toggleUserModal(false);
         getProject();
@@ -82,7 +73,7 @@ export default () => {
   
 
   const deleteUser = (panelist) => {
-    firestoreService.users.deletePanelist({...panelist, projectId: project.id}).then(() => {
+    firestoreService.users.deletePanelist(project.id, panelist).then(() => {
       getProject();
     });
   };

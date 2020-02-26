@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, Chip, IconButton, Menu, MenuItem } from '@material-ui/core';
 import { MoreVert, AccountCircle } from '@material-ui/icons';
 
+
 const styles = {
   container: {
     position: 'relative'
@@ -9,7 +10,6 @@ const styles = {
 };
 
 export default (props) => {
-
   const {name} = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -22,9 +22,19 @@ export default (props) => {
     setAnchorEl(event.currentTarget);
   };
 
-  
+  const onClick = () => {
+    if(props.accepted && typeof props.onClick === 'function') {
+      props.onClick();
+    }
+  };
+  const containerStyle = {...styles.container};
+
+  if(props.accepted) {
+    containerStyle.cursor = 'pointer';
+  }
+
   return (
-    <Card style={{...styles.container, ...props.style}}>
+    <Card onClick={onClick} style={{...containerStyle, ...props.style}}>
       <CardContent>
         <IconButton size="small" onClick={handleClick} style={{position: 'absolute', right: 10}}>
           <MoreVert />

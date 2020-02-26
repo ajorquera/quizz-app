@@ -151,7 +151,7 @@ export default () => {
         <Grid container spacing={3}>
           {project.panel && project.panel.map((item, i) => (
               <Grid item key={i} >
-                <PanelistCard style={styles.panelistCard} accepted={item.hasAcceptInvitation} name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
+                <PanelistCard onClick={() => history.push(`/panelist-info/${item.uid}`)} style={styles.panelistCard} accepted={item.hasAcceptInvitation} name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
               </Grid>
           ))}
           {loading && (

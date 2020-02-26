@@ -27,7 +27,7 @@ export default (props) => {
   };
 
   return (
-    <span style={styles.container}>
+    <span style={{...styles.container, ...props.style}}>
       <input onChange={onChange} style={styles.input} ref={inputEl} type="file" accept="image/*" capture="camera" />
       <Button
         variant="contained"

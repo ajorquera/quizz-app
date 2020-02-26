@@ -3,29 +3,23 @@ import {FormControl, FormGroup, FormControlLabel, FormLabel, Checkbox} from '@ma
 
 const styles = {
   container: {
-    
+    display: 'block'
   }
 };
 
 
 export default (props) => {
+
   const onChange = (option, isChecked) => {
     if(typeof props.onChange === 'function') {
-      const value = Array.isArray(props.value) ? [...props.value] : [];
-
-      if(isChecked) {
-        value.push(option.value);
-      } else {
-        const index = value.findIndex(str => str === option.value);
-        value.splice(index, 1);
-      }
-      
-      props.onChange(value);
+      props.onChange(option, isChecked);
     }
   };
 
   const isChecked = (option) => {
-    return Array.isArray(props.value) && props.value.find(item => item.value === option.value);
+    const value = props.value;
+    if(!Array.isArray(value)) return false;  
+    return value.some(item => (item.value || item.label) === (option.value || option.label));
   };
 
   return (

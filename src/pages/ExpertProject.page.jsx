@@ -3,9 +3,10 @@ import Assignment from '@material-ui/icons/Assignment';
 import MoodBad from '@material-ui/icons/MoodBad';
 
 import {useAuth} from '../components/Auth';
-import ImgInput from '../components/ImgInput';
 import {storageService, firestoreService} from '../utils/services';
-import { Grid, CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
+import Task from '../components/Task';
+
 
 
 const styles = {
@@ -24,36 +25,48 @@ export default (props) => {
   const {firestoreUser} = useAuth();
 
   const [loading, setLoading] = useState(true);
-  const [photos, setPhotos] = useState([]);
 
   useEffect(() => {
     if(firestoreUser) {
       
       setLoading(false);
-      if(firestoreUser.photos) setPhotos(firestoreUser.photos);
+      
     }
   }, [firestoreUser]);
 
-  const uploadFile = async (file) => {
-    setLoading(true);
-    const path = await storageService.uploadFile(`user/${firestoreUser.id}/photos`, file);
-    const newPhoto = createPhoto(path);
-    
-    photos.push(newPhoto);
-    firestoreService.updateMe({photos});
+  const onSubmitTask = async (task, actions) => {
+    const actionsData = await Promise.all(actions.map(async action => {
+      const requirement = action.requirements[0];
+      const newAction = {
+          label: action.label
+      };
 
-    setPhotos([...photos]);
-    setLoading(false);
-  };
+      if(requirement) {
+        newAction.requirement = requirement;  
+      }
 
-  const createPhoto = (path) => {
-    return {
-      timestamp: Date.now(),
-      url: storageService.getFileUrl(path)
+      if(requirement === 'geopoint') {
+        const {latitude, longitude} = action.result.coords;
+        newAction.geopoint = {latitude, longitude};
+      } else if(requirement === 'photos') {
+        newAction.photo = await storageService.uploadFile(`user/${firestoreUser.id}/photos`, action.result);
+      }
+
+      return newAction;
+    }));
+
+    const newTask = {
+      ...task,
+      todos: actionsData,
+      dateTime: (new Date()).toISOString()
     };
+
+
+    firestoreService.addHistory(newTask);
   };
   
   const project = firestoreUser && firestoreUser.project;
+  const tasks = project && project.tasks;
 
   return (
     <div style={styles.container}>
@@ -61,15 +74,14 @@ export default (props) => {
           <React.Fragment>
             <h1>
               <span style={{marginRight: '10px'}}>{project.name}</span>
-              <ImgInput onChange={uploadFile} />
             </h1>
-            <Grid container justify="center" spacing={4}>
-              {photos.reverse().map((photo, i) => (
-                <Grid style={styles.photoContainer} item key={i}>
-                  <img style={styles.image} src={photo.url} alt="ohoto" />
-                </Grid>
+            
+            <h3>Tareas por hacer</h3>
+            <div>
+              {!loading && tasks.map((task, i) => (
+                <Task task={task} key={i} onSubmit={onSubmitTask} />
               ))}
-            </Grid>
+            </div>
           </React.Fragment>
         )}
         <div style={{textAlign: 'center', marginTop: '40px'}}>

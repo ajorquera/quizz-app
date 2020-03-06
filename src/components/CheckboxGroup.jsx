@@ -19,7 +19,7 @@ export default (props) => {
   const isChecked = (option) => {
     const value = props.value;
     if(!Array.isArray(value)) return false;  
-    return value.some(item => (item.value || item.label) === (option.value || option.label));
+    return value.some(item => (item.value || item.label) === (option.value || option.label) || item === option.value);
   };
 
   return (

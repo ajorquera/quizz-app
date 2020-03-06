@@ -8,7 +8,6 @@ import UserDialog from '../components/UserDialog';
 import Grid from '@material-ui/core/Grid';
 import PanelistCard from '../components/PanelistCard';
 import NotificationDialog from '../components/NotificationDialog';
-import UserInfoDialog from '../components/UserInfoDialog';
 import {useAuth} from '../components/Auth';
 import { useSnackbar } from 'notistack';
 import TodoCard from '../components/TodoCard';
@@ -36,7 +35,6 @@ export default () => {
   const [panelist, setPanelist] = useState(null);
   const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false);
   const [isOpenNewTodoDialog, setIsOpenNewTodoDialog] = useState(false);
-  const [isOpenUserModal, setIsOpenUserModal] = useState(false);
   const {accessToken} = useAuth();
 
 
@@ -83,11 +81,6 @@ export default () => {
     setIsOpenNotificationModal(true);
   };
 
-  const showUserInfo = (userInfo) => {
-    setPanelist({...userInfo, projectId: project.id});
-    setIsOpenUserModal(true);
-  };
-
   const onClickMenu = (type, panelist) => {
     switch(type) {
       case 'sendSms':
@@ -99,7 +92,7 @@ export default () => {
         break;
 
       case 'showInfo': 
-        showUserInfo(panelist);
+        history.push(`/panelist-info/${panelist.uid}`);
         break;
 
       default: 
@@ -107,7 +100,6 @@ export default () => {
   };
 
   const sendNotification = (data) => {
-    debugger
     setIsOpenNotificationModal(false);
     apiService.notifications.create({
       to: data.phone,
@@ -126,7 +118,6 @@ export default () => {
 
   const onNewTask = async (task) => {
     setIsOpenNewTodoDialog(false);
-
     await firestoreService.projects.addTask(project.id, task);
     getProject();
   };
@@ -151,7 +142,7 @@ export default () => {
         <Grid container spacing={3}>
           {project.panel && project.panel.map((item, i) => (
               <Grid item key={i} >
-                <PanelistCard onClick={() => history.push(`/panelist-info/${item.uid}`)} style={styles.panelistCard} accepted={item.hasAcceptInvitation} name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
+                <PanelistCard style={styles.panelistCard} accepted={item.hasAcceptInvitation} name={item.name} onClickMenu={(type) => onClickMenu(type, item)} key={i} />
               </Grid>
           ))}
           {loading && (
@@ -184,7 +175,6 @@ export default () => {
 
       <UserDialog onSubmit={onSubmit} open={isOpenModal} onClose={() => toggleUserModal(false)} />
       <NotificationDialog title="Enviar invitación" onSubmit={sendNotification} open={isOpenNotificationModal} onClose={() => setIsOpenNotificationModal(false)} data={panelist} />
-      <UserInfoDialog title="Información" open={isOpenUserModal} onClose={() => setIsOpenUserModal(false)} data={panelist} />
       <NewTodoDialog onSubmit={onNewTask} title="Tarea" open={isOpenNewTodoDialog} onClose={() => setIsOpenNewTodoDialog(false)} />
     </React.Fragment>
   );

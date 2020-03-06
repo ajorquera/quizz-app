@@ -34,9 +34,8 @@ export default (props) => {
     setTodos([...todos]);
   };
 
-  const onChangeCheckbox = (todo, value) => {
-    todo.requirements = value;
-
+  const onChangeCheckbox = (todo, option, isChecked) => {
+    todo.requirements = [option.value];
     setTodos([...todos]);
   };
 
@@ -69,7 +68,7 @@ export default (props) => {
           {todos.map((todo, i) => (
             <div key={i}>
               <div><TextField value={todo.label} onChange={(e) => onChangeLabel(todo, e.target.value)} placeholder="Nombre" /></div>
-              <CheckboxGroup value={todo.requirements} row options={options} onChange={(value) => onChangeCheckbox(todo, value)} />
+              <CheckboxGroup value={todo.requirements} row options={options} onChange={(value, isChecked) => onChangeCheckbox(todo, value, isChecked)} />
             </div>
           ))}
         </div>

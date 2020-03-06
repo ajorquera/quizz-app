@@ -19,22 +19,23 @@ export default (props) => {
   };
 
   const handleClick = event => {
+    event.preventDefault();
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const onClick = () => {
-    if(props.accepted && typeof props.onClick === 'function') {
-      props.onClick();
-    }
-  };
+ 
   const containerStyle = {...styles.container};
 
-  if(props.accepted) {
-    containerStyle.cursor = 'pointer';
-  }
+  const onClickMenu = (event, type) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if(typeof props.onClickMenu === 'function') props.onClickMenu(type, props.id);
+  };
 
   return (
-    <Card onClick={onClick} style={{...containerStyle, ...props.style}}>
+    <Card style={{...containerStyle, ...props.style}}>
       <CardContent>
         <IconButton size="small" onClick={handleClick} style={{position: 'absolute', right: 10}}>
           <MoreVert />
@@ -44,9 +45,9 @@ export default (props) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={props.onClickMenu.bind(null, 'sendSms', props.id)}>Enviar invitación</MenuItem>
-          {props.accepted && <MenuItem onClick={props.onClickMenu.bind(null, 'showInfo', props.id)}>Mostrar información</MenuItem>}
-          <MenuItem onClick={props.onClickMenu.bind(null, 'delete', props.id)}>Borrar</MenuItem>
+          <MenuItem onClick={(e) => onClickMenu(e, 'sendSms')}>Enviar invitación</MenuItem>
+          {props.accepted && <MenuItem onClick={(e) => onClickMenu(e, 'showInfo')}>Ver Informacion</MenuItem>}
+          <MenuItem onClick={(e) => onClickMenu(e, 'delete')}>Borrar</MenuItem>
         </Menu>
         <div style={{textAlign: 'center'}}>
           <AccountCircle style={{fontSize: '50px'}} />
